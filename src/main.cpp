@@ -58,7 +58,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    SDL_Window* window = SDL_CreateWindow("SDL3 Test", 800, 600, 0);
+    SDL_Window* window = SDL_CreateWindow("Muharrik Test", 800, 600, 0);
     if (!window) {
         std::printf("SDL_CreateWindow failed: %s\n", SDL_GetError());
         SDL_Quit();
