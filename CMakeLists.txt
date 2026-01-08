@@ -4,7 +4,7 @@ project(Muharrik LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Vulkan REQUIRED)
+#find_package(Vulkan REQUIRED)
 
 set(SDL_SHARED OFF CACHE BOOL "" FORCE)
 set(SDL_STATIC ON  CACHE BOOL "" FORCE)
@@ -27,7 +27,7 @@ target_include_directories(app PRIVATE
 )
 
 # Vulkan
-target_link_libraries(app PRIVATE Vulkan::Vulkan)
+#target_link_libraries(app PRIVATE Vulkan::Vulkan)
 
 # SDL link
 if (TARGET SDL3::SDL3-static)
@@ -47,15 +47,15 @@ if (ENGINE_SOURCES)
         "${CMAKE_SOURCE_DIR}/src"
         "${CMAKE_SOURCE_DIR}/thirdparty/glm"
     )
-    target_link_libraries(muharrik_engine PUBLIC Vulkan::Vulkan)
+    #target_link_libraries(muharrik_engine PUBLIC Vulkan::Vulkan)
 
     # Link engine into app
     target_link_libraries(app PRIVATE muharrik_engine)
 endif()
 
 # rpath for Vulkan loader (macOS)
-if(APPLE)
-  set_target_properties(app PROPERTIES
-    BUILD_RPATH "$ENV{VULKAN_SDK}/lib"
-  )
-endif()
+# if(APPLE)
+#   set_target_properties(app PROPERTIES
+#     BUILD_RPATH "$ENV{VULKAN_SDK}/lib"
+#   )
+# endif()

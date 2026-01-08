@@ -3,49 +3,49 @@
 #include <SDL3/SDL.h>
 #include <glm/glm.hpp>
 #include <cstdio>
-#include <vulkan/vulkan.h>
+//#include <vulkan/vulkan.h>
 #include <iostream>
 #include <vector>
 
-void VulkanCheck()
-{
-    // Print loader-supported Vulkan version (optional)
-    uint32_t apiVersion = VK_API_VERSION_1_0;
-    vkEnumerateInstanceVersion(&apiVersion);
-    std::cout << "Vulkan API version: "
-              << VK_VERSION_MAJOR(apiVersion) << "."
-              << VK_VERSION_MINOR(apiVersion) << "."
-              << VK_VERSION_PATCH(apiVersion) << "\n";
+// void VulkanCheck()
+// {
+//     // Print loader-supported Vulkan version (optional)
+//     uint32_t apiVersion = VK_API_VERSION_1_0;
+//     vkEnumerateInstanceVersion(&apiVersion);
+//     std::cout << "Vulkan API version: "
+//               << VK_VERSION_MAJOR(apiVersion) << "."
+//               << VK_VERSION_MINOR(apiVersion) << "."
+//               << VK_VERSION_PATCH(apiVersion) << "\n";
 
-    // App info (optional, but nice)
-    VkApplicationInfo appInfo{};
-    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-    appInfo.pApplicationName = "HelloVulkan";
-    appInfo.apiVersion = VK_API_VERSION_1_0;
+//     // App info (optional, but nice)
+//     VkApplicationInfo appInfo{};
+//     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+//     appInfo.pApplicationName = "HelloVulkan";
+//     appInfo.apiVersion = VK_API_VERSION_1_0;
 
-    // IMPORTANT on macOS/MoltenVK:
-    // opt-in to enumerate portability drivers (MoltenVK)
-    const char* exts[] = { VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME };
+//     // IMPORTANT on macOS/MoltenVK:
+//     // opt-in to enumerate portability drivers (MoltenVK)
+//     const char* exts[] = { VK_KHR_PORTABILITY_ENUMERATION_EXTENSION_NAME };
 
-    VkInstanceCreateInfo ci{};
-    ci.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-    ci.pApplicationInfo = &appInfo;
-    ci.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
-    ci.enabledExtensionCount = 1;
-    ci.ppEnabledExtensionNames = exts;
+//     VkInstanceCreateInfo ci{};
+//     ci.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+//     ci.pApplicationInfo = &appInfo;
+//     ci.flags |= VK_INSTANCE_CREATE_ENUMERATE_PORTABILITY_BIT_KHR;
+//     ci.enabledExtensionCount = 1;
+//     ci.ppEnabledExtensionNames = exts;
 
-    VkInstance instance = VK_NULL_HANDLE;
-    VkResult r = vkCreateInstance(&ci, nullptr, &instance);
-    if (r != VK_SUCCESS) {
-        std::cerr << "vkCreateInstance failed: " << r << "\n";
-    }
+//     VkInstance instance = VK_NULL_HANDLE;
+//     VkResult r = vkCreateInstance(&ci, nullptr, &instance);
+//     if (r != VK_SUCCESS) {
+//         std::cerr << "vkCreateInstance failed: " << r << "\n";
+//     }
 
-    uint32_t count = 0;
-    r = vkEnumeratePhysicalDevices(instance, &count, nullptr);
-    std::cout << "Physical devices found: " << count << "\n";
+//     uint32_t count = 0;
+//     r = vkEnumeratePhysicalDevices(instance, &count, nullptr);
+//     std::cout << "Physical devices found: " << count << "\n";
 
-    vkDestroyInstance(instance, nullptr);
-}
+//     vkDestroyInstance(instance, nullptr);
+// }
 
 int main(int argc, char** argv)
 {
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
     glm::vec2 v(1.0f, 2.0f);
     std::printf("%f %f\n", v.x, v.y);
 
-    VulkanCheck();
+    //VulkanCheck();
 
     return 0;
 }
