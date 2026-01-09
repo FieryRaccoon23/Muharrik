@@ -14,14 +14,14 @@ namespace Muharrik
 
         if (!SDL_Init(SDL_INIT_VIDEO)) 
         {
-            std::printf("SDL_Init failed: %s\n", SDL_GetError());
+            std::printf("SDL: SDL_Init failed: %s\n", SDL_GetError());
             return 1;
         }
 
         mWindow = SDL_CreateWindow("Muharrik", 800, 600, 0);
         if (!mWindow) 
         {
-            std::printf("SDL_CreateWindow failed: %s\n", SDL_GetError());
+            std::printf("SDL: SDL_CreateWindow failed: %s\n", SDL_GetError());
             SDL_Quit();
             return 1;
         }
