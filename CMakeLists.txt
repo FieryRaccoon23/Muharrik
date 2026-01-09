@@ -48,6 +48,7 @@ if (ENGINE_SOURCES)
         "${CMAKE_SOURCE_DIR}/thirdparty/glm"
     )
     #target_link_libraries(muharrik_engine PUBLIC Vulkan::Vulkan)
+    target_link_libraries(muharrik_engine PUBLIC SDL3::SDL3-static)
 
     # Link engine into app
     target_link_libraries(app PRIVATE muharrik_engine)
