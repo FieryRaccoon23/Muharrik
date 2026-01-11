@@ -5,10 +5,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 #find_package(Vulkan REQUIRED)
-
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(SDL_SHARED OFF CACHE BOOL "" FORCE)
 set(SDL_STATIC ON  CACHE BOOL "" FORCE)
+
 add_subdirectory(thirdparty/sdl EXCLUDE_FROM_ALL)
+set(SDL3_DIR "${CMAKE_BINARY_DIR}/thirdparty/sdl" CACHE PATH "" FORCE)
+
+set(SDL3IMAGE_SHARED OFF CACHE BOOL "" FORCE)
+set(SDL3IMAGE_STATIC ON  CACHE BOOL "" FORCE)
+
+add_subdirectory(thirdparty/sdl_image EXCLUDE_FROM_ALL)
 
 # ---- Collect engine sources (optional for now) ----
 file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS
@@ -30,15 +37,17 @@ target_include_directories(app PRIVATE
 #target_link_libraries(app PRIVATE Vulkan::Vulkan)
 
 # SDL link
-if (TARGET SDL3::SDL3-static)
-    target_link_libraries(app PRIVATE SDL3::SDL3-static)
-elseif (TARGET SDL2::SDL2-static)
-    target_link_libraries(app PRIVATE SDL2::SDL2-static)
-elseif (TARGET SDL2::SDL2)
-    target_link_libraries(app PRIVATE SDL2::SDL2)
-else()
-    message(FATAL_ERROR "Could not find SDL CMake target.")
-endif()
+# if (TARGET SDL3::SDL3-static)
+#     target_link_libraries(app PRIVATE SDL3::SDL3-static)
+# elseif (TARGET SDL2::SDL2-static)
+#     target_link_libraries(app PRIVATE SDL2::SDL2-static)
+# elseif (TARGET SDL2::SDL2)
+#     target_link_libraries(app PRIVATE SDL2::SDL2)
+# else()
+#     message(FATAL_ERROR "Could not find SDL CMake target.")
+# endif()
+
+#set(MUHARRIK_SDL_IMAGE_TARGET SDL3_image::SDL3_image)
 
 # Create engine library ONLY when you actually have engine sources
 if (ENGINE_SOURCES)
@@ -48,7 +57,16 @@ if (ENGINE_SOURCES)
         "${CMAKE_SOURCE_DIR}/thirdparty/glm"
     )
     #target_link_libraries(muharrik_engine PUBLIC Vulkan::Vulkan)
-    target_link_libraries(muharrik_engine PUBLIC SDL3::SDL3-static)
+    #target_link_libraries(muharrik_engine PUBLIC SDL3::SDL3-static)
+#     target_link_libraries(muharrik_engine PUBLIC
+#     SDL3::SDL3-static
+#     ${MUHARRIK_SDL_IMAGE_TARGET}
+# )
+
+    target_link_libraries(muharrik_engine PUBLIC 
+        SDL3::SDL3-static
+        SDL3_image::SDL3_image-static
+    )
 
     # Link engine into app
     target_link_libraries(app PRIVATE muharrik_engine)

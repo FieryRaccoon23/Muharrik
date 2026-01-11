@@ -2,6 +2,7 @@
 #include <cstdint>
 
 struct SDL_Window;
+struct SDL_Renderer;
 
 namespace Muharrik
 {
@@ -12,8 +13,10 @@ namespace Muharrik
         bool PollSDL();
         void QuitSDL();
         void DelaySDL(uint32_t ms);
+        void LoadPNGTexture(const char* path);
 
         private:
         SDL_Window* mWindow = nullptr;
+        SDL_Renderer* mRenderer = nullptr;
     };
 }
