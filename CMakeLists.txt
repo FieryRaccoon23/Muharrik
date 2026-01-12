@@ -27,6 +27,14 @@ file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS
 add_executable(app src/main.cpp)
 target_compile_definitions(app PRIVATE SDL_MAIN_HANDLED)
 
+# Copy runtime content next to the executable: build/bin/content/...
+add_custom_command(TARGET app POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:app>/content"
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+            "${CMAKE_SOURCE_DIR}/src/content"
+            "$<TARGET_FILE_DIR:app>/content"
+)
+
 # glm include (header-only)
 target_include_directories(app PRIVATE
     "${CMAKE_SOURCE_DIR}/thirdparty/glm"

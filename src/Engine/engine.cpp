@@ -11,6 +11,8 @@ namespace Muharrik
     {
         Muharrik::SDL sdl;
 
+        bool loadedImage = false;
+
         int error = sdl.InitSDL();
 
         if(error > 0)
@@ -22,6 +24,14 @@ namespace Muharrik
         bool running = true;
         while (running) 
         {
+            if(!loadedImage)
+            {
+                const char* relativePath = "content/engine/test.png";
+                sdl.LoadPNGTexture(relativePath);
+                loadedImage = true;
+
+                sdl.RenderTexture();
+            }
             running = sdl.PollSDL();
             sdl.DelaySDL(FRAME_DELAY);
         }
