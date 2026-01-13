@@ -1,7 +1,7 @@
 #include "engine.h"
 
-#include "sdl.h"
-#include "ecs.h"
+#include "Display/sdl.h"
+#include "ECS/ecs.h"
 #include <cstdio>
 
 #define FRAME_DELAY 16 // 60 fps
