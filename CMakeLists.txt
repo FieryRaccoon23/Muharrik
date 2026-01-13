@@ -53,3 +53,9 @@ if (ENGINE_SOURCES)
     target_link_libraries(app PRIVATE muharrik_engine)
 endif()
 
+# For packaging
+option(MUHARRIK_PACKAGE "Enable install + packaging rules" OFF)
+
+if(MUHARRIK_PACKAGE)
+  include("${CMAKE_SOURCE_DIR}/cmake/Packaging.cmake")
+endif()

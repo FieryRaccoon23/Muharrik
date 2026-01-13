@@ -1,4 +1,7 @@
 build/
+build-pack/
+_CPack_Packages/
+shippable/
 .DS_Store
 build.log
 Backup_Cmake.txt
