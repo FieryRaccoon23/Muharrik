@@ -4,7 +4,6 @@ project(Muharrik LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-#find_package(Vulkan REQUIRED)
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 set(SDL_SHARED OFF CACHE BOOL "" FORCE)
 set(SDL_STATIC ON  CACHE BOOL "" FORCE)
@@ -35,28 +34,6 @@ add_custom_command(TARGET app POST_BUILD
             "$<TARGET_FILE_DIR:app>/content"
 )
 
-# glm + entt include (header-only)
-# target_include_directories(app PRIVATE
-#     "${CMAKE_SOURCE_DIR}/thirdparty/glm"
-#     "${CMAKE_SOURCE_DIR}/thirdparty/entt/src"
-#     "${CMAKE_SOURCE_DIR}/src"
-# )
-
-# Vulkan
-#target_link_libraries(app PRIVATE Vulkan::Vulkan)
-
-# SDL link
-# if (TARGET SDL3::SDL3-static)
-#     target_link_libraries(app PRIVATE SDL3::SDL3-static)
-# elseif (TARGET SDL2::SDL2-static)
-#     target_link_libraries(app PRIVATE SDL2::SDL2-static)
-# elseif (TARGET SDL2::SDL2)
-#     target_link_libraries(app PRIVATE SDL2::SDL2)
-# else()
-#     message(FATAL_ERROR "Could not find SDL CMake target.")
-# endif()
-
-#set(MUHARRIK_SDL_IMAGE_TARGET SDL3_image::SDL3_image)
 
 # Create engine library ONLY when you actually have engine sources
 if (ENGINE_SOURCES)
@@ -66,12 +43,6 @@ if (ENGINE_SOURCES)
         "${CMAKE_SOURCE_DIR}/thirdparty/glm"
         "${CMAKE_SOURCE_DIR}/thirdparty/entt/src"
     )
-    #target_link_libraries(muharrik_engine PUBLIC Vulkan::Vulkan)
-    #target_link_libraries(muharrik_engine PUBLIC SDL3::SDL3-static)
-#     target_link_libraries(muharrik_engine PUBLIC
-#     SDL3::SDL3-static
-#     ${MUHARRIK_SDL_IMAGE_TARGET}
-# )
 
     target_link_libraries(muharrik_engine PUBLIC 
         SDL3::SDL3-static
@@ -82,9 +53,3 @@ if (ENGINE_SOURCES)
     target_link_libraries(app PRIVATE muharrik_engine)
 endif()
 
-# rpath for Vulkan loader (macOS)
-# if(APPLE)
-#   set_target_properties(app PROPERTIES
-#     BUILD_RPATH "$ENV{VULKAN_SDK}/lib"
-#   )
-# endif()
