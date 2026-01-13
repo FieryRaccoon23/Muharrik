@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include "sdl.h"
+#include "ecs.h"
 #include <cstdio>
 
 #define FRAME_DELAY 16 // 60 fps
@@ -9,6 +10,9 @@ namespace Muharrik
 {
     void Engine::MainLoop()
     {
+        Muharrik::ECS entity;
+        entity.TestEntity();
+
         Muharrik::SDL sdl;
 
         bool loadedImage = false;

@@ -35,11 +35,12 @@ add_custom_command(TARGET app POST_BUILD
             "$<TARGET_FILE_DIR:app>/content"
 )
 
-# glm include (header-only)
-target_include_directories(app PRIVATE
-    "${CMAKE_SOURCE_DIR}/thirdparty/glm"
-    "${CMAKE_SOURCE_DIR}/src"
-)
+# glm + entt include (header-only)
+# target_include_directories(app PRIVATE
+#     "${CMAKE_SOURCE_DIR}/thirdparty/glm"
+#     "${CMAKE_SOURCE_DIR}/thirdparty/entt/src"
+#     "${CMAKE_SOURCE_DIR}/src"
+# )
 
 # Vulkan
 #target_link_libraries(app PRIVATE Vulkan::Vulkan)
@@ -63,6 +64,7 @@ if (ENGINE_SOURCES)
     target_include_directories(muharrik_engine PUBLIC
         "${CMAKE_SOURCE_DIR}/src"
         "${CMAKE_SOURCE_DIR}/thirdparty/glm"
+        "${CMAKE_SOURCE_DIR}/thirdparty/entt/src"
     )
     #target_link_libraries(muharrik_engine PUBLIC Vulkan::Vulkan)
     #target_link_libraries(muharrik_engine PUBLIC SDL3::SDL3-static)
