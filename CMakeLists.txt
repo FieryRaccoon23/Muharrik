@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.20)
 project(Muharrik LANGUAGES C CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
@@ -15,6 +15,14 @@ set(SDL3IMAGE_SHARED OFF CACHE BOOL "" FORCE)
 set(SDL3IMAGE_STATIC ON  CACHE BOOL "" FORCE)
 
 add_subdirectory(thirdparty/sdl_image EXCLUDE_FROM_ALL)
+
+find_package(Threads REQUIRED)
+
+add_library(taskflow INTERFACE)
+target_include_directories(taskflow INTERFACE
+    "${CMAKE_SOURCE_DIR}/thirdparty/taskflow"
+)
+target_link_libraries(taskflow INTERFACE Threads::Threads)
 
 # ---- Collect engine sources (optional for now) ----
 file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS
@@ -47,6 +55,7 @@ if (ENGINE_SOURCES)
     target_link_libraries(muharrik_engine PUBLIC 
         SDL3::SDL3-static
         SDL3_image::SDL3_image-static
+        taskflow
     )
 
     # Link engine into app

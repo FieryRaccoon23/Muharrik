@@ -1,2 +1,3 @@
 SDL: 3.2.14
 SDL_Image: 3.2.4
+Taskflow: 4.0.0
