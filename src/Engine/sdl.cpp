@@ -1,12 +1,12 @@
 #include "sdl.h"
 
+#define SDL_MAIN_HANDLED 1
+
 #include <cstdio>
 #include <string>
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
-
-#define SDL_MAIN_HANDLED 1
 
 namespace Muharrik
 {
