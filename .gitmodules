@@ -13,3 +13,9 @@
 [submodule "thirdparty/taskflow"]
 	path = thirdparty/taskflow
 	url = https://github.com/taskflow/taskflow.git
+[submodule "thirdparty/eastl"]
+	path = thirdparty/eastl
+	url = https://github.com/electronicarts/EASTL.git
+[submodule "thirdparty/eabase"]
+	path = thirdparty/eabase
+	url = https://github.com/electronicarts/EABase.git
