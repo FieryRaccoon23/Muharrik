@@ -10,15 +10,12 @@ namespace Muharrik
 {
     void Engine::MainLoop()
     {
-        Muharrik::ECS entity;
-        entity.TestEntity();
+        Muharrik::ECS ecs;
+        ecs.InitECS();
 
         Muharrik::SDL sdl;
-
         bool loadedImage = false;
-
         int error = sdl.InitSDL();
-
         if(error > 0)
         {
             std::printf("MainLoop: SDL Init failed: %d\n", error);
