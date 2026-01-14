@@ -3,6 +3,7 @@
 #include "Display/sdl.h"
 #include "ECS/ecs.h"
 #include "AssetManager/SpriteAssetManager.h"
+#include "Scene/SceneManager.h"
 
 #include <cstdio>
 
@@ -29,6 +30,9 @@ namespace Muharrik
         // EnTT
         Muharrik::ECS ecs;
         ecs.InitECS(&spriteAssetManager);
+
+        // Scenes
+        SceneManager sceneManager;
 
         //TEST
         const char* relativePath = "content/engine/test.png";
