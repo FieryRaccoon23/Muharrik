@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL3_image/SDL_image.h>
+
 struct SDL_Texture;
 
 namespace Muharrik
@@ -8,5 +10,10 @@ namespace Muharrik
     {
         public:
         SDL_Texture* mTexture;
+
+        ~SDLData()
+        {
+            SDL_DestroyTexture(mTexture);
+        }
     };
 }

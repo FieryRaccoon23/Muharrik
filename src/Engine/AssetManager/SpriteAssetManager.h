@@ -21,7 +21,7 @@ namespace Muharrik
         int CreateTexture(entt::registry& registry, entt::entity e, const eastl::string& path);
         SpriteVec GetRuntimeSprites() const { return mRuntimeSpritesData;}
 
-        ~SpriteAssetManager();
+        void DestroySpriteAssetManager(entt::registry& registry);
 
         private:
         SpriteVec mRuntimeSpritesData;

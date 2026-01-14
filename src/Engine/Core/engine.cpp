@@ -46,6 +46,7 @@ namespace Muharrik
         }
 
         sdl.QuitSDL();
+        spriteAssetManager.DestroySpriteAssetManager(ecs.GetRegistry());
     }
     
 }

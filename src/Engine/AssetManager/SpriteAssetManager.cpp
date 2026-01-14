@@ -2,7 +2,6 @@
 
 #include "Display/sdl.h"
 #include "Components/sdldata.h"
-#include <SDL3_image/SDL_image.h>
 
 namespace Muharrik
 {
@@ -20,13 +19,9 @@ namespace Muharrik
         return mRuntimeSpritesData.size() - 1;
     }
 
-    SpriteAssetManager::~SpriteAssetManager()
+    void SpriteAssetManager::DestroySpriteAssetManager(entt::registry& registry)
     {
-        // NOTE: Leaking Memory here !!!!!
-        for(auto t : mRuntimeSpritesData)
-        {
-            //SDL_DestroyTexture(t);
-        }
+        registry.clear<SDLData>();
 
         mRuntimeSpritesData.clear();
     }

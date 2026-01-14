@@ -18,6 +18,7 @@ namespace Muharrik
             float x, float y, float rot, float w, float h);
 
         entt::registry& GetRegistry() { return mRegistry;}
+        const entt::registry& GetRegistry() const { return mRegistry; }
 
         private:
         entt::registry mRegistry;
