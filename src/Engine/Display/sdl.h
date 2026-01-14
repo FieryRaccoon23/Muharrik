@@ -1,5 +1,9 @@
 #pragma once
+
 #include <cstdint>
+
+#include <EASTL/string.h>
+#include <EASTL/span.h>
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -14,12 +18,12 @@ namespace Muharrik
         bool PollSDL();
         void QuitSDL();
         void DelaySDL(uint32_t ms);
-        void LoadPNGTexture(const char* relativePath);
-        void RenderTexture();
+        SDL_Texture* LoadPNGTexture (const char* relativePath) const;
+        void RenderTexture(eastl::span<SDL_Texture* const> textures);
 
         private:
         SDL_Window* mWindow = nullptr;
         SDL_Renderer* mRenderer = nullptr;
-        SDL_Texture* mTexture = nullptr;
+        eastl::string mBasePath;
     };
 }

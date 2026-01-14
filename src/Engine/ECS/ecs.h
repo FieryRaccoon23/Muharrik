@@ -13,7 +13,7 @@ namespace Muharrik
 
         // Factory constructors for entities
 
-        Sprite CreateSprite(std::string path, float x, float y, float rot);
+        Sprite CreateSprite(std::string path, float x, float y, float rot, float w, float h);
 
         private:
         entt::registry mRegistry;

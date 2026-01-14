@@ -2,6 +2,7 @@
 
 #include "Components/position2D.h"
 #include "Components/rotation2D.h"
+#include "Components/scale2D.h"
 
 // #include <taskflow/taskflow.hpp>
 
@@ -26,11 +27,12 @@ namespace Muharrik
 
     }
 
-    Sprite ECS::CreateSprite(std::string path, float x, float y, float rot)
+    Sprite ECS::CreateSprite(std::string path, float x, float y, float rot, float w, float h)
     {
         Sprite s = mRegistry.create();
         mRegistry.emplace<Position2D>(s, x, y);
         mRegistry.emplace<Rotation2D>(s, rot);
+        mRegistry.emplace<Scale2D>(s, w, h);
         return s;
     }
     
