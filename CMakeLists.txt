@@ -26,6 +26,24 @@ target_include_directories(taskflow INTERFACE
 )
 target_link_libraries(taskflow INTERFACE Threads::Threads)
 
+# EABase is headers-only
+add_library(eabase INTERFACE)
+target_include_directories(eabase INTERFACE
+    "${CMAKE_SOURCE_DIR}/thirdparty/eabase/include/Common"
+)
+
+# Build EASTL from sources (works even if EASTL's own CMake isn't used)
+file(GLOB EASTL_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/thirdparty/eastl/source/*.cpp"
+)
+
+add_library(eastl STATIC ${EASTL_SOURCES})
+target_include_directories(eastl PUBLIC
+    "${CMAKE_SOURCE_DIR}/thirdparty/eastl/include"
+    "${CMAKE_SOURCE_DIR}/thirdparty/eabase/include/Common"
+)
+target_link_libraries(eastl PUBLIC eabase)
+
 # ---- Collect engine sources ----
 file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/Engine/*.cpp"
@@ -60,6 +78,8 @@ if (ENGINE_SOURCES)
         SDL3::SDL3-static
         SDL3_image::SDL3_image-static
         taskflow
+        eastl
+        eabase
     )
 
     # Link engine into app (PUBLIC include dirs flow to app through this link)
