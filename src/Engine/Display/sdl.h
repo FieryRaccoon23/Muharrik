@@ -4,6 +4,7 @@
 
 #include <EASTL/string.h>
 #include <EASTL/span.h>
+#include <entt/entt.hpp>
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -19,7 +20,7 @@ namespace Muharrik
         void QuitSDL();
         void DelaySDL(uint32_t ms);
         SDL_Texture* LoadPNGTexture (const char* relativePath) const;
-        void RenderTexture(eastl::span<SDL_Texture* const> textures);
+        void RenderTexture(eastl::span<entt::entity> sprites, entt::registry& registry);
 
         private:
         SDL_Window* mWindow = nullptr;

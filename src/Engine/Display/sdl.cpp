@@ -7,6 +7,11 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 
+#include "Components/position2D.h"
+#include "Components/rotation2D.h"
+#include "Components/scale2D.h"
+#include "Components/sdldata.h"
+
 namespace Muharrik
 {
     int SDL::InitSDL()
@@ -101,36 +106,28 @@ namespace Muharrik
         return texture;
     }
 
-    void SDL::RenderTexture(eastl::span<SDL_Texture* const> textures)
+    void SDL::RenderTexture(eastl::span<entt::entity> sprites, entt::registry& registry)
     {
         SDL_RenderClear(mRenderer);
 
         
-        for(SDL_Texture* t : textures)
+        for(entt::entity e : sprites)
         {
+            Position2D& pos = registry.get<Position2D>(e);
+            Scale2D& scale = registry.get<Scale2D>(e);
+            SDLData& sdlData = registry.get<SDLData>(e);
+
+            SDL_Texture* t = sdlData.mTexture;
             float w=0, h=0;
             SDL_GetTextureSize(t, &w, &h);
-            float scale = 0.5f; 
             SDL_FRect dst;
-            dst.x = 0.0f;
-            dst.y = 0.0f;
-            dst.w = w * scale;
-            dst.h = h * scale;
+            dst.x = pos.mValue.x;
+            dst.y = pos.mValue.y;
+            dst.w = scale.mValue.x * w;
+            dst.h = scale.mValue.y * h;
 
             SDL_RenderTexture(mRenderer, t, nullptr, &dst);
         }
-
-        // float w=0, h=0;
-        // SDL_GetTextureSize(mTexture, &w, &h);
-
-        // float scale = 0.5f; 
-        // SDL_FRect dst;
-        // dst.x = 0.0f;
-        // dst.y = 0.0f;
-        // dst.w = w * scale;
-        // dst.h = h * scale;
-
-        // SDL_RenderTexture(mRenderer, mTexture, nullptr, &dst);
 
         SDL_RenderPresent(mRenderer);
     }

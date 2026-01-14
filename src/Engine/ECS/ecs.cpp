@@ -1,39 +1,25 @@
 #include "ecs.h"
 
-#include "Components/position2D.h"
-#include "Components/rotation2D.h"
-#include "Components/scale2D.h"
+#include "Entities/sprite.h"
+#include "AssetManager/SpriteAssetManager.h"
 
 // #include <taskflow/taskflow.hpp>
 
 namespace Muharrik
 {
-    // void ECS::TestEntity()
-    // {
-    //     // entt::registry reg;
-    //     // entt::entity ent = reg.create();
-    //     // reg.emplace<Position2D>(ent, 1.0f, 2.0f);
-    //     // reg.emplace<Rotation2D>(ent, 1.0f);
-
-    //     // Position2D& pos = reg.get<Position2D>(ent);
-    //     // pos = Position2D(5.0f, 6.0f);
-
-    //     // Rotation2D& rot = reg.get<Rotation2D>(ent);
-    //     // rot = Rotation2D(5.0f);
-    // }
-
-    void ECS::InitECS()
+    void ECS::InitECS(SpriteAssetManager* value)
     {
-
+        mSpriteAssetManager = value;
     }
 
-    Sprite ECS::CreateSprite(std::string path, float x, float y, float rot, float w, float h)
+    entt::entity ECS::CreateSprite(const eastl::string& path, 
+        float x, float y, float rot, float w, float h)
     {
-        Sprite s = mRegistry.create();
-        mRegistry.emplace<Position2D>(s, x, y);
-        mRegistry.emplace<Rotation2D>(s, rot);
-        mRegistry.emplace<Scale2D>(s, w, h);
-        return s;
+        entt::entity e = Sprite::CreateSpriteEntity(mRegistry, x, y, rot, w, h);
+
+        int idx = mSpriteAssetManager->CreateTexture(mRegistry, e, path);
+
+        return e;
     }
     
 }

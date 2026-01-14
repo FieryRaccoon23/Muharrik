@@ -2,7 +2,7 @@
 
 #include "Display/sdl.h"
 #include "ECS/ecs.h"
-#include "AssetManager/TextureAssetManager.h"
+#include "AssetManager/SpriteAssetManager.h"
 
 #include <cstdio>
 
@@ -12,10 +12,6 @@ namespace Muharrik
 {
     void Engine::MainLoop()
     {
-        // EnTT
-        Muharrik::ECS ecs;
-        ecs.InitECS();
-
         // SDL
         Muharrik::SDL sdl;
         bool loadedImage = false;
@@ -26,19 +22,24 @@ namespace Muharrik
             return;
         }
 
-        // TextureAssetManager
-        TextureAssetManager textureAssetManager;
-        textureAssetManager.InitTextureAssetManager(&sdl);
+        // SpriteAssetManager
+        SpriteAssetManager spriteAssetManager;
+        spriteAssetManager.InitSpriteAssetManager(&sdl);
+
+        // EnTT
+        Muharrik::ECS ecs;
+        ecs.InitECS(&spriteAssetManager);
 
         //TEST
         const char* relativePath = "content/engine/test.png";
-        textureAssetManager.CreateTexture(relativePath);
+        entt::entity e = ecs.CreateSprite(relativePath, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+        std::printf("Entity: %d \n", e);
 
         bool running = true;
         while (running) 
         {
-            sdl.RenderTexture({ textureAssetManager.GetRuntimeTextures().data(), 
-                textureAssetManager.GetRuntimeTextures().size() });
+            sdl.RenderTexture({ spriteAssetManager.GetRuntimeSprites().data(), 
+                spriteAssetManager.GetRuntimeSprites().size() }, ecs.GetRegistry());
 
             running = sdl.PollSDL();
             sdl.DelaySDL(FRAME_DELAY);
