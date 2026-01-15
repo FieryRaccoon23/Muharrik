@@ -9,11 +9,12 @@ namespace Muharrik
     struct SDLData
     {
         public:
-        SDL_Texture* mTexture;
+        SDL_Texture* mTexture = nullptr;
 
         ~SDLData()
         {
             SDL_DestroyTexture(mTexture);
+            mTexture = nullptr;
         }
     };
 }
