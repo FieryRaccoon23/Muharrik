@@ -12,14 +12,18 @@ namespace Muharrik
         mSpriteAssetManager = value;
     }
 
-    entt::entity ECS::CreateSprite(const eastl::string& path, 
-        float x, float y, float rot, float w, float h)
+    entt::entity ECS::CreateEmptyEntity()
     {
-        entt::entity e = Sprite::CreateSpriteEntity(mRegistry, x, y, rot, w, h);
+        entt::entity e = mRegistry.create();
+        return e;
+    }
+
+    void ECS::CreateSprite(entt::entity e, const eastl::string& path, 
+            float x, float y, float rot, float w, float h)
+    {
+        Sprite::CreateSpriteEntity(mRegistry, e, x, y, rot, w, h);
 
         int idx = mSpriteAssetManager->CreateTexture(mRegistry, e, path);
-
-        return e;
     }
     
 }

@@ -14,8 +14,10 @@ namespace Muharrik
 
         // Factory constructors for entities
 
-        entt::entity CreateSprite(const eastl::string& path, 
+        void CreateSprite(entt::entity e, const eastl::string& path, 
             float x, float y, float rot, float w, float h);
+
+        entt::entity CreateEmptyEntity();
 
         entt::registry& GetRegistry() { return mRegistry;}
         const entt::registry& GetRegistry() const { return mRegistry; }

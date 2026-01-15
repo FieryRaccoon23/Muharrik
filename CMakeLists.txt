@@ -50,11 +50,18 @@ file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/Engine/*.c"
 )
 
+# ---- Collect game sources ----
+file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS
+    "${CMAKE_SOURCE_DIR}/src/Game/*.cpp"
+    "${CMAKE_SOURCE_DIR}/src/Game/*.c"
+)
+
 # App
 add_executable(app src/main.cpp)
 target_compile_definitions(app PRIVATE SDL_MAIN_HANDLED)
 
 # Copy runtime content next to the executable: build/bin/content/...
+# This will include: src/content/game/... automatically
 add_custom_command(TARGET app POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:app>/content"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -82,8 +89,47 @@ if (ENGINE_SOURCES)
         eabase
     )
 
-    # Link engine into app (PUBLIC include dirs flow to app through this link)
-    target_link_libraries(app PRIVATE muharrik_engine)
+    # NOTE:
+    # Do NOT link engine directly into app here.
+    # If app links muharrik_game and muharrik_game links muharrik_engine,
+    # linking engine again causes: ld: warning: ignoring duplicate libraries: 'libmuharrik_engine.a'
+endif()
+
+# Create game library ONLY when you actually have game sources
+if (GAME_SOURCES)
+    add_library(muharrik_game STATIC ${GAME_SOURCES})
+
+    # Include root for game so you can do: #include "Player/player.h"
+    # (if file is src/Game/Player/player.h)
+    target_include_directories(muharrik_game PUBLIC
+        "${CMAKE_SOURCE_DIR}/src/Game"
+    )
+
+    # Game should see engine headers (and inherit engine deps) if engine exists
+    if (TARGET muharrik_engine)
+        target_link_libraries(muharrik_game PUBLIC muharrik_engine)
+    else()
+        # If you ever build game without engine, it still needs core deps
+        target_link_libraries(muharrik_game PUBLIC
+            SDL3::SDL3-static
+            SDL3_image::SDL3_image-static
+            taskflow
+            eastl
+            eabase
+        )
+        target_include_directories(muharrik_game PUBLIC
+            "${CMAKE_SOURCE_DIR}/thirdparty/glm"
+            "${CMAKE_SOURCE_DIR}/thirdparty/entt/src"
+        )
+    endif()
+
+    # Link game into app
+    target_link_libraries(app PRIVATE muharrik_game)
+else()
+    # Optional fallback: if there's no game target, but engine exists, link engine into app.
+    if (TARGET muharrik_engine)
+        target_link_libraries(app PRIVATE muharrik_engine)
+    endif()
 endif()
 
 # For packaging

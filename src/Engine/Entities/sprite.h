@@ -7,7 +7,7 @@ namespace Muharrik
 {
     namespace Sprite
     {
-        entt::entity CreateSpriteEntity(entt::registry& registry, 
+        void CreateSpriteEntity(entt::registry& registry, entt::entity e,
         float x, float y, float rot, float w, float h);
     }
 

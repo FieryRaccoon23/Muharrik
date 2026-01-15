@@ -110,7 +110,6 @@ namespace Muharrik
     {
         SDL_RenderClear(mRenderer);
 
-        
         for(entt::entity e : sprites)
         {
             Position2D& pos = registry.get<Position2D>(e);

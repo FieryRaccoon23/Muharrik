@@ -1,9 +1,6 @@
 #include "engine.h"
 
-#include "Display/sdl.h"
-#include "ECS/ecs.h"
-#include "AssetManager/SpriteAssetManager.h"
-#include "Scene/SceneManager.h"
+#include "factory.h"
 
 #include <cstdio>
 
@@ -11,12 +8,11 @@
 
 namespace Muharrik
 {
-    void Engine::MainLoop()
+    void Engine::InitEngine()
     {
         // SDL
-        Muharrik::SDL sdl;
         bool loadedImage = false;
-        int error = sdl.InitSDL();
+        int error = mSDL.InitSDL();
         if(error > 0)
         {
             std::printf("MainLoop: SDL Init failed: %d\n", error);
@@ -24,33 +20,59 @@ namespace Muharrik
         }
 
         // SpriteAssetManager
-        SpriteAssetManager spriteAssetManager;
-        spriteAssetManager.InitSpriteAssetManager(&sdl);
+        mSpriteAssetManager.InitSpriteAssetManager(&mSDL);
 
         // EnTT
-        Muharrik::ECS ecs;
-        ecs.InitECS(&spriteAssetManager);
+        mECS.InitECS(&mSpriteAssetManager);
 
         // Scenes
-        SceneManager sceneManager;
+        //...
 
-        //TEST
-        const char* relativePath = "content/engine/test.png";
-        entt::entity e = ecs.CreateSprite(relativePath, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f);
-        std::printf("Entity: %d \n", e);
+        // Delegates
+        OnCreateEmptyEntityDelegate.connect<&Engine::OnCreateEmptyEntity>(this);
+        OnCreateSpriteEntityDelegate.connect<&Engine::OnCreateSpriteEntity>(this);
+    }
 
+    void Engine::MainLoop(IGame& game)
+    {
         bool running = true;
+
+        game.Init();
+
         while (running) 
         {
-            sdl.RenderTexture({ spriteAssetManager.GetRuntimeSprites().data(), 
-                spriteAssetManager.GetRuntimeSprites().size() }, ecs.GetRegistry());
+            mSDL.RenderTexture({ mSpriteAssetManager.GetRuntimeSprites().data(), 
+                mSpriteAssetManager.GetRuntimeSprites().size() }, mECS.GetRegistry());
 
-            running = sdl.PollSDL();
-            sdl.DelaySDL(FRAME_DELAY);
+            running = mSDL.PollSDL();
+
+            // NOTE: Pass correct frame rate
+            game.Update(0.0f);
+
+            mSDL.DelaySDL(FRAME_DELAY);
         }
 
-        sdl.QuitSDL();
-        spriteAssetManager.DestroySpriteAssetManager(ecs.GetRegistry());
+        game.Finish();
+
+    }
+
+    void Engine::QuitEngine()
+    {
+        mSDL.QuitSDL();
+        mSpriteAssetManager.DestroySpriteAssetManager(mECS.GetRegistry());
+    }
+
+    entt::entity Engine::OnCreateEmptyEntity()
+    {
+        return mECS.CreateEmptyEntity();
     }
     
+    entt::entity Engine::OnCreateSpriteEntity(const eastl::string& path, 
+            float x, float y, float rot, float w, float h)
+    {
+        entt::entity e = mECS.CreateEmptyEntity();
+        mECS.CreateSprite(e, path, x, y, rot, w, h);
+
+        return e;
+    }
 }
