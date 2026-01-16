@@ -26,18 +26,18 @@ namespace Muharrik
         mECS.InitECS(&mSpriteAssetManager);
 
         // Scenes
-        //...
+        mSceneManager.InitSceneManager();
 
         // Delegates
-        OnCreateEmptyEntityDelegate.connect<&Engine::OnCreateEmptyEntity>(this);
-        OnCreateSpriteEntityDelegate.connect<&Engine::OnCreateSpriteEntity>(this);
+        //OnCreateEmptyEntityDelegate.connect<&Engine::OnCreateEmptyEntity>(this);
+        //OnCreateSpriteEntityDelegate.connect<&Engine::OnCreateSpriteEntity>(this);
     }
 
     void Engine::MainLoop(IGame& game)
     {
         bool running = true;
 
-        game.Init();
+        game.Init(this);
 
         while (running) 
         {
@@ -60,6 +60,12 @@ namespace Muharrik
     {
         mSDL.QuitSDL();
         mSpriteAssetManager.DestroySpriteAssetManager(mECS.GetRegistry());
+        mSceneManager.QuiteSceneManager();
+    }
+
+    int Engine::OnAddEntitiesToSceneManager(EntitiesVec entities)
+    {
+        return mSceneManager.AddScene(entities);
     }
 
     entt::entity Engine::OnCreateEmptyEntity()

@@ -1,6 +1,9 @@
 #include "GameLoop.h"
 
-#include "Core/factory.h"
+#include "Core/engine.h"
+//#include "Core/factory.h"
+
+#include "GameScenes.h"
 
 #include <entt/entt.hpp>
 #include <EASTL/string.h>
@@ -8,14 +11,11 @@
 
 namespace MuharrikGame
 {
-    void GameLoop::Init()
+    void GameLoop::Init(Muharrik::Engine* engine)
     {
-        //TEST
-        const char* relativePath = "content/engine/test.png";
-        entt::entity e1 = Muharrik::OnCreateSpriteEntityDelegate(relativePath, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f);
-
-        const char* relativePath2 = "content/engine/test2.png";
-        entt::entity e2 = Muharrik::OnCreateSpriteEntityDelegate(relativePath2, 250.0f, 0.0f, 0.0f, 0.5f, 1.0f);
+        GameScenes gameScene;
+        mEngine = engine;
+        gameScene.InitScenes(mEngine);
     }
 
     void GameLoop::Start()

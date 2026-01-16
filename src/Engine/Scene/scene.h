@@ -8,13 +8,14 @@
 
 namespace Muharrik
 {
+    using EntitiesVec = eastl::fixed_vector<entt::entity, MAX_ENTITIES, false>;
+
     class Scene
     {
-        using EntitiesVec = eastl::fixed_vector<int, MAX_ENTITIES, false>;
-
         public:
         Scene(){}
         ~Scene(){}
+        void AddEntities(const EntitiesVec& entities);
 
         private:
         EntitiesVec mEntitiesVector;

@@ -15,14 +15,15 @@ namespace Muharrik
         void MainLoop(IGame& game);
         void QuitEngine();
 
+        entt::entity OnCreateEmptyEntity();
+        entt::entity OnCreateSpriteEntity(const eastl::string& path, 
+            float x, float y, float rot, float w, float h);
+        int OnAddEntitiesToSceneManager(EntitiesVec entities);
+
         private:
         Muharrik::SDL mSDL;
         SpriteAssetManager mSpriteAssetManager;
         Muharrik::ECS mECS;
         SceneManager mSceneManager;
-
-        entt::entity OnCreateEmptyEntity();
-        entt::entity OnCreateSpriteEntity(const eastl::string& path, 
-            float x, float y, float rot, float w, float h);
     };
 }

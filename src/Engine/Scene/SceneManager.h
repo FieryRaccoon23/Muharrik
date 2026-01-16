@@ -1,9 +1,12 @@
 #pragma once
 
+#include "scene.h"
+
 #include <EASTL/string.h>
 #include <EASTL/fixed_vector.h>
 
 #define MAX_SCENES 50
+#define INIT_CAPACITY 10
 
 namespace Muharrik
 {
@@ -18,12 +21,16 @@ namespace Muharrik
         SceneManager(){}
         ~SceneManager(){}
 
+        void InitSceneManager();
         void UnloadScene(int id);
         void LoadScene(int id);
+        int AddScene(const EntitiesVec& entities);
+        void QuiteSceneManager();
 
         private:
         ScenesVec mScenesVector;
         LoadedScenesVec mCurrentScene;
+        int mLastSceneID = -1;
     };
 
 }
