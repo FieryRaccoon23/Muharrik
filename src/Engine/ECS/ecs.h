@@ -3,6 +3,8 @@
 #include <entt/entt.hpp>
 #include <EASTL/string.h>
 
+#include "AssetManager/SpriteSerializedData.h"
+
 namespace Muharrik
 {
     class SpriteAssetManager;
@@ -14,7 +16,7 @@ namespace Muharrik
 
         // Factory constructors for entities
 
-        void CreateSprite(entt::entity e, const eastl::string& path, 
+        void CreateSprite(entt::entity e, SpriteEnum se,
             float x, float y, float rot, float w, float h);
 
         entt::entity CreateEmptyEntity();

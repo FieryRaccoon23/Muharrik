@@ -4,6 +4,7 @@
 #include "Display/sdl.h"
 #include "ECS/ecs.h"
 #include "AssetManager/SpriteAssetManager.h"
+#include "AssetManager/SpriteSerializedData.h"
 #include "Scene/SceneManager.h"
 
 namespace Muharrik
@@ -16,7 +17,7 @@ namespace Muharrik
         void QuitEngine();
 
         entt::entity OnCreateEmptyEntity();
-        entt::entity OnCreateSpriteEntity(const eastl::string& path, 
+        entt::entity OnCreateSpriteEntity(SpriteEnum se, 
             float x, float y, float rot, float w, float h);
         int OnAddEntitiesToSceneManager(EntitiesVec entities);
 

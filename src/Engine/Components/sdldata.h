@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SDL3_image/SDL_image.h>
+#include "AssetManager/SpriteSerializedData.h"
 
 struct SDL_Texture;
 
@@ -9,12 +9,11 @@ namespace Muharrik
     struct SDLData
     {
         public:
-        SDL_Texture* mTexture = nullptr;
+        SpriteEnum mTextureID = SpriteEnum::NONE;
 
         ~SDLData()
         {
-            SDL_DestroyTexture(mTexture);
-            mTexture = nullptr;
+            mTextureID = SpriteEnum::NONE;
         }
     };
 }

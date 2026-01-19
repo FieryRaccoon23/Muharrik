@@ -41,8 +41,7 @@ namespace Muharrik
 
         while (running) 
         {
-            mSDL.RenderTexture({ mSpriteAssetManager.GetRuntimeSprites().data(), 
-                mSpriteAssetManager.GetRuntimeSprites().size() }, mECS.GetRegistry());
+            mSDL.RenderTexture(&mSpriteAssetManager, mECS.GetRegistry());
 
             running = mSDL.PollSDL();
 
@@ -60,7 +59,7 @@ namespace Muharrik
     {
         mSDL.QuitSDL();
         mSpriteAssetManager.DestroySpriteAssetManager(mECS.GetRegistry());
-        mSceneManager.QuiteSceneManager();
+        mSceneManager.ClearScenes();
     }
 
     int Engine::OnAddEntitiesToSceneManager(EntitiesVec entities)
@@ -73,11 +72,11 @@ namespace Muharrik
         return mECS.CreateEmptyEntity();
     }
     
-    entt::entity Engine::OnCreateSpriteEntity(const eastl::string& path, 
+    entt::entity Engine::OnCreateSpriteEntity(SpriteEnum se, 
             float x, float y, float rot, float w, float h)
     {
         entt::entity e = mECS.CreateEmptyEntity();
-        mECS.CreateSprite(e, path, x, y, rot, w, h);
+        mECS.CreateSprite(e, se, x, y, rot, w, h);
 
         return e;
     }

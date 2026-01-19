@@ -6,7 +6,9 @@
 #include <SDL3/SDL_main.h>
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
+#include <EASTL/fixed_hash_map.h>
 
+#include "AssetManager/SpriteAssetManager.h"
 #include "Components/position2D.h"
 #include "Components/rotation2D.h"
 #include "Components/scale2D.h"
@@ -34,7 +36,8 @@ namespace Muharrik
 
 
         mRenderer = SDL_CreateRenderer(mWindow, nullptr);
-        if (!mRenderer) {
+        if (!mRenderer) 
+        {
             std::printf("SDL: SDL_CreateRenderer failed: %s\n", SDL_GetError());
             return 1;
         }
@@ -43,6 +46,17 @@ namespace Muharrik
 
         const char* sdlPath = SDL_GetBasePath();
         mBasePath = sdlPath;
+
+        // const char* name = SDL_GetRendererName(mRenderer);
+        // if (!name) 
+        // {
+        //     std::printf("SDL_GetRendererName failed: %s\n", SDL_GetError());
+        // } else 
+        // {
+        //     const bool isSoftware = (std::strcmp(name, "software") == 0);
+        //     std::printf("SDL renderer name: %s\n", name);
+        //     std::printf("Rendering path: %s\n", isSoftware ? "CPU (software)" : "GPU (accelerated)");
+        // }
 
         return 0;
     }
@@ -106,17 +120,19 @@ namespace Muharrik
         return texture;
     }
 
-    void SDL::RenderTexture(eastl::span<entt::entity> sprites, entt::registry& registry)
+    void SDL::RenderTexture(const SpriteAssetManager* spriteAssetManager, entt::registry& registry)
     {
         SDL_RenderClear(mRenderer);
 
-        for(entt::entity e : sprites)
+        auto view = registry.view<SDLData>();
+        const auto& spriteMap = spriteAssetManager->GetRuntimeSpriteAssets();
+
+        for(const entt::entity e : view)
         {
             Position2D& pos = registry.get<Position2D>(e);
             Scale2D& scale = registry.get<Scale2D>(e);
-            SDLData& sdlData = registry.get<SDLData>(e);
 
-            SDL_Texture* t = sdlData.mTexture;
+            SDL_Texture* t = spriteMap.at(e);
             float w=0, h=0;
             SDL_GetTextureSize(t, &w, &h);
             SDL_FRect dst;

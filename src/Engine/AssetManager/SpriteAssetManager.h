@@ -1,8 +1,10 @@
 #pragma once
 
 #include <EASTL/string.h>
-#include <EASTL/fixed_vector.h>
+#include <EASTL/fixed_hash_map.h>
 #include <entt/entt.hpp>
+
+#include "SpriteSerializedData.h"
 
 #define MAX_TEXTURE_ASSETS 50
 
@@ -12,19 +14,34 @@ namespace Muharrik
 {
     class SDL;
 
-    using SpriteVec = eastl::fixed_vector<entt::entity, MAX_TEXTURE_ASSETS, false>;
+    using SpriteMap = eastl::fixed_hash_map<
+        entt::entity,
+        SDL_Texture*,
+        MAX_TEXTURE_ASSETS,
+        MAX_TEXTURE_ASSETS * 2,
+        false
+    >;
+
+    using TextureMap = eastl::fixed_hash_map<
+        SpriteEnum,
+        SDL_Texture*,
+        MAX_TEXTURE_ASSETS,
+        MAX_TEXTURE_ASSETS * 2,
+        false
+    >;
 
     class SpriteAssetManager
     {
         public:
         void InitSpriteAssetManager(const SDL* sdl);
-        int CreateTexture(entt::registry& registry, entt::entity e, const eastl::string& path);
-        SpriteVec GetRuntimeSprites() const { return mRuntimeSpritesData;}
+        void CreateTexture(entt::entity e, SpriteEnum se);
+        const SpriteMap& GetRuntimeSpriteAssets() const { return mRuntimeSpriteAssets;}
 
         void DestroySpriteAssetManager(entt::registry& registry);
 
         private:
-        SpriteVec mRuntimeSpritesData;
+        SpriteMap mRuntimeSpriteAssets;
+        TextureMap mRuntimeTextureCache;
         const SDL* mSDL = nullptr;
     };
 }

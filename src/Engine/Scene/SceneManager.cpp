@@ -1,44 +1,58 @@
 #include "SceneManager.h"
 
+#include <cstdio>
+
 namespace Muharrik
 {
     void SceneManager::InitSceneManager()
     {
-        for(int i = 0; i < INIT_CAPACITY; ++i)
-        {
-            Scene* newScene = new Scene();
-            mScenesVector.push_back(newScene);
-        }
-        mLastSceneID = -1;
-    }
-
-    void SceneManager::UnloadScene(int id)
-    {
-
-    }
-
-    void SceneManager::LoadScene(int id)
-    {
-
     }
 
     int SceneManager::AddScene(const EntitiesVec& entities)
     {
-        if(mLastSceneID >= INIT_CAPACITY - 1)
+        int result = -1;
+
+        if(!mAvailableSpaces.empty())
         {
-            Scene* newScene = new Scene();
-            mScenesVector.push_back(newScene);
+            result = mAvailableSpaces.front();
+            mAvailableSpaces.pop();
         }
 
-        ++mLastSceneID;
+        Scene* newScene = new Scene();
+        newScene->AddEntities(entities);
 
-        Scene* s = mScenesVector[mLastSceneID];
-        s->AddEntities(entities);
+        if(result == -1)
+        {
+            mScenesVector.push_back(newScene);
+            result = mScenesVector.size() - 1;
+        }
+        else
+        {
+            mScenesVector[result] = newScene;
+        }
 
-        return mLastSceneID;
+        return result;
     }
 
-    void SceneManager::QuiteSceneManager()
+    void SceneManager::RemoveScene(int i)
+    {
+        if(i >= mScenesVector.size())
+        {
+            std::printf("SceneManager: Scene vector is: %lu while i is:%d\n", mScenesVector.size(), i);
+            return;
+        }
+
+        Scene* s = mScenesVector[i];
+        if( s != nullptr)
+        {
+            delete s;
+            s = nullptr;
+
+            mAvailableSpaces.push(i);
+        }
+    }
+
+    void SceneManager::ClearScenes()
     {
         for(auto s : mScenesVector)
         {

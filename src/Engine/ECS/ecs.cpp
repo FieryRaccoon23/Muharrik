@@ -18,12 +18,12 @@ namespace Muharrik
         return e;
     }
 
-    void ECS::CreateSprite(entt::entity e, const eastl::string& path, 
+    void ECS::CreateSprite(entt::entity e, SpriteEnum se, 
             float x, float y, float rot, float w, float h)
     {
         Sprite::CreateSpriteEntity(mRegistry, e, x, y, rot, w, h);
 
-        int idx = mSpriteAssetManager->CreateTexture(mRegistry, e, path);
+        mSpriteAssetManager->CreateTexture(e, se);
     }
     
 }

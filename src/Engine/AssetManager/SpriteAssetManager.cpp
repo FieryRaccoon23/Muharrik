@@ -1,5 +1,7 @@
 #include "SpriteAssetManager.h"
 
+#include <SDL3_image/SDL_image.h>
+
 #include "Display/sdl.h"
 #include "Components/sdldata.h"
 
@@ -10,19 +12,36 @@ namespace Muharrik
         mSDL = sdl;
     }
 
-    int SpriteAssetManager::CreateTexture(entt::registry& registry, entt::entity e, const eastl::string& path)
+    void SpriteAssetManager::CreateTexture(entt::entity e, SpriteEnum se)
     {
-        SDL_Texture* texture = mSDL->LoadPNGTexture(path.c_str());
-        SDLData& sdlData = registry.get<SDLData>(e);
-        sdlData.mTexture = texture;
-        mRuntimeSpritesData.push_back(e);
-        return mRuntimeSpritesData.size() - 1;
+        SDL_Texture* texture = nullptr;
+
+        if(mRuntimeTextureCache.contains(se))
+        {
+            texture = mRuntimeTextureCache[se];
+        }
+        else
+        {
+            const eastl::string& path = gSpriteAssets.at((int)se);
+            texture = mSDL->LoadPNGTexture(path.c_str());
+            mRuntimeTextureCache.insert({se, texture});
+        }
+
+        mRuntimeSpriteAssets.insert({e, texture});
     }
 
     void SpriteAssetManager::DestroySpriteAssetManager(entt::registry& registry)
     {
-        registry.clear<SDLData>();
+        for (auto kv : mRuntimeTextureCache)
+        {
+            SDL_Texture* value = kv.second;
+            SDL_DestroyTexture(value);
+            value = nullptr;
+        }
 
-        mRuntimeSpritesData.clear();
+        mRuntimeTextureCache.clear();
+        mRuntimeSpriteAssets.clear();
+
+        registry.clear<SDLData>();
     }
 }

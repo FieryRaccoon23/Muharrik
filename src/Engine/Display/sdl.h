@@ -12,6 +12,8 @@ struct SDL_Texture;
 
 namespace Muharrik
 {
+    class SpriteAssetManager;
+    
     class SDL
     {
         public:
@@ -20,7 +22,7 @@ namespace Muharrik
         void QuitSDL();
         void DelaySDL(uint32_t ms);
         SDL_Texture* LoadPNGTexture (const char* relativePath) const;
-        void RenderTexture(eastl::span<entt::entity> sprites, entt::registry& registry);
+        void RenderTexture(const SpriteAssetManager* spriteAssetManager, entt::registry& registry);
 
         private:
         SDL_Window* mWindow = nullptr;
