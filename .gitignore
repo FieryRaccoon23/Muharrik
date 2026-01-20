@@ -5,3 +5,6 @@ shippable/
 .DS_Store
 build.log
 Backup_Cmake.txt
+Launch*/
+leak.txt
+debug.entitlements

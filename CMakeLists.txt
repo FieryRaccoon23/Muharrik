@@ -132,6 +132,50 @@ else()
     endif()
 endif()
 
+# ----------------------------
+# Sanitizers (target-based)
+# ----------------------------
+# option(MUHARRIK_SANITIZE "Enable sanitizers (address/undefined)" ON)
+# option(MUHARRIK_UBSAN "Also enable UBSan" ON)
+
+# function(muharrik_enable_sanitizers target_name)
+#   if(MSVC)
+#     message(WARNING "MUHARRIK_SANITIZE: Use clang-cl or Visual Studio AddressSanitizer support.")
+#     return()
+#   endif()
+
+#   # These should apply only to your code targets
+#   target_compile_options(${target_name} PRIVATE
+#     -fno-omit-frame-pointer
+#     -g
+#     -fsanitize=address
+#   )
+#   target_link_options(${target_name} PRIVATE
+#     -fsanitize=address
+#   )
+
+#   if(MUHARRIK_UBSAN)
+#     target_compile_options(${target_name} PRIVATE -fsanitize=undefined)
+#     target_link_options(${target_name} PRIVATE -fsanitize=undefined)
+#   endif()
+# endfunction()
+
+# if(MUHARRIK_SANITIZE)
+#   # Enable on whatever targets exist
+#   if(TARGET muharrik_engine)
+#     muharrik_enable_sanitizers(muharrik_engine)
+#   endif()
+
+#   if(TARGET muharrik_game)
+#     muharrik_enable_sanitizers(muharrik_game)
+#   endif()
+
+#   if(TARGET app)
+#     muharrik_enable_sanitizers(app)
+#   endif()
+# endif()
+
+
 # For packaging
 option(MUHARRIK_PACKAGE "Enable install + packaging rules" OFF)
 
