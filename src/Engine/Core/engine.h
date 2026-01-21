@@ -6,6 +6,7 @@
 #include "AssetManager/SpriteAssetManager.h"
 #include "AssetManager/SpriteSerializedData.h"
 #include "Scene/SceneManager.h"
+#include "Input/InputHandler.h"
 
 namespace Muharrik
 {
@@ -23,10 +24,14 @@ namespace Muharrik
         int OnAddEntitiesToSceneManager(const EntitiesVec& entities);
         void OnRemoveSceneFromSceneManager(int i);
 
+        const InputHandler& GetInputHandler() const { return mInputHandler;}
+        const Muharrik::SDL& GetSDL() const { return mSDL;}
+
         private:
         Muharrik::SDL mSDL;
         SpriteAssetManager mSpriteAssetManager;
         Muharrik::ECS mECS;
         SceneManager mSceneManager;
+        InputHandler mInputHandler;
     };
 }

@@ -28,6 +28,9 @@ namespace Muharrik
         // Scenes
         mSceneManager.InitSceneManager();
 
+        //Input
+        mInputHandler.InitInputHandler();
+
         // Delegates
         //OnCreateEmptyEntityDelegate.connect<&Engine::OnCreateEmptyEntity>(this);
         //OnCreateSpriteEntityDelegate.connect<&Engine::OnCreateSpriteEntity>(this);
@@ -41,14 +44,16 @@ namespace Muharrik
 
         while (running) 
         {
-            mSDL.RenderTexture(&mSpriteAssetManager, mECS.GetRegistry());
+            mInputHandler.UpdateInputHandler();
 
             running = mSDL.PollSDL();
 
             // NOTE: Pass correct frame rate
             game.Update(0.0f);
 
-            mSDL.DelaySDL(FRAME_DELAY);
+            mSDL.RenderTexture(&mSpriteAssetManager, mECS.GetRegistry());
+
+            //mSDL.DelaySDL(FRAME_DELAY);
         }
 
         game.Finish();

@@ -23,6 +23,7 @@ namespace Muharrik
         void DelaySDL(uint32_t ms);
         SDL_Texture* LoadPNGTexture (const char* relativePath) const;
         void RenderTexture(const SpriteAssetManager* spriteAssetManager, entt::registry& registry);
+        void ToggleFullScreen() const;
 
         private:
         SDL_Window* mWindow = nullptr;

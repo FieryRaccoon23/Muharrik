@@ -1,13 +1,14 @@
 #include "GameLoop.h"
 
 #include "Core/engine.h"
-//#include "Core/factory.h"
+#include "Input/InputHandler.h"
 
 #include "GameScenes.h"
 
 #include <entt/entt.hpp>
 #include <EASTL/string.h>
 #include <EASTL/fixed_vector.h>
+#include <cstdio>
 
 namespace MuharrikGame
 {
@@ -32,6 +33,14 @@ namespace MuharrikGame
             //GameScenes gameScene;
         }
         ++i;
+
+        // Add in player input
+        if ((mEngine->GetInputHandler().IsActionDown(Muharrik::InputAction::LAlt) ||
+            mEngine->GetInputHandler().IsActionDown(Muharrik::InputAction::RAlt)) &&
+            mEngine->GetInputHandler().IsActionPressed(Muharrik::InputAction::Enter))
+        {
+            mEngine->GetSDL().ToggleFullScreen();
+        }   
     }
 
     void GameLoop::End()

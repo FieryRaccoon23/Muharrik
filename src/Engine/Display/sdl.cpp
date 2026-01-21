@@ -146,5 +146,18 @@ namespace Muharrik
 
         SDL_RenderPresent(mRenderer);
     }
+
+    void SDL::ToggleFullScreen() const
+    {
+        Uint32 flags = SDL_GetWindowFlags(mWindow);
+        if (flags & SDL_WINDOW_FULLSCREEN) 
+        {
+            SDL_SetWindowFullscreen(mWindow, false);
+        } 
+        else 
+        {
+            SDL_SetWindowFullscreen(mWindow, true); 
+        }
+    }
     
 }
