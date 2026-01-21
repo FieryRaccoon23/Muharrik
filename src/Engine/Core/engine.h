@@ -19,7 +19,9 @@ namespace Muharrik
         entt::entity OnCreateEmptyEntity();
         entt::entity OnCreateSpriteEntity(SpriteEnum se, 
             float x, float y, float rot, float w, float h);
-        int OnAddEntitiesToSceneManager(EntitiesVec entities);
+        void OnDestroyEntities(const EntitiesVec& entities);
+        int OnAddEntitiesToSceneManager(const EntitiesVec& entities);
+        void OnRemoveSceneFromSceneManager(int i);
 
         private:
         Muharrik::SDL mSDL;

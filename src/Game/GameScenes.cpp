@@ -1,42 +1,73 @@
 #include "GameScenes.h"
 
-#include "Scene/SceneManager.h"
 #include "Core/engine.h"
 #include "AssetManager/SpriteSerializedData.h"
-//#include "Core/factory.h"
+#include "Scene/SceneManager.h"
 
-#include <entt/entt.hpp>
-#include <EASTL/string.h>
 #include <EASTL/fixed_vector.h>
+#include <entt/entt.hpp>
 
 namespace MuharrikGame
 {
-    void GameScenes::InitScenes(Muharrik::Engine* engine)
+    void AppendEntities(Muharrik::EntitiesVec& currentEntites, const Muharrik::EntitiesVec& sceneEntities)
     {
-        //TEST
-        //const char* relativePath = "content/engine/test.png";
-        //entt::entity e1 = Muharrik::OnCreateSpriteEntityDelegate(relativePath, 0.0f, 0.0f, 0.0f, 0.5f, 1.0f);
+        const auto need = currentEntites.size() + sceneEntities.size();
+        if (need > currentEntites.max_size()) 
+        {
+            return;
+        }
+
+        currentEntites.insert(currentEntites.end(), currentEntites.begin(), currentEntites.end());
+    }
+
+    /////////////////////////////////SCENES//////////////////////////////////////////////////
+
+    void Scene1(Muharrik::Engine* engine, Muharrik::EntitiesVec& sceneEntities)
+    {
         entt::entity e1 = engine->OnCreateSpriteEntity(Muharrik::SpriteEnum::Test_Duck, 
             0.0f, 0.0f, 0.0f, 0.5f, 1.0f);
-        //const char* relativePath2 = "content/engine/test2.png";
-        //entt::entity e2 = Muharrik::OnCreateSpriteEntityDelegate(relativePath2, 250.0f, 0.0f, 0.0f, 0.5f, 1.0f);
+
         entt::entity e2 = engine->OnCreateSpriteEntity(Muharrik::SpriteEnum::Test_Pigeon, 
             250.0f, 0.0f, 0.0f, 0.5f, 1.0f);
 
-        entt::entity e3 = engine->OnCreateSpriteEntity(Muharrik::SpriteEnum::Test_Pigeon, 
-        450.0f, 0.0f, 0.0f, 1.0f, 1.0f);
+        sceneEntities.push_back(e1);
+        sceneEntities.push_back(e2);
 
-        Muharrik::EntitiesVec entities;
-        entities.push_back(e1);
-        entities.push_back(e2);
-        entities.push_back(e3);
-
-        engine->OnAddEntitiesToSceneManager(entities);
-
+        engine->OnAddEntitiesToSceneManager(sceneEntities);
     }
 
-    void GameScenes::SetStartupScenes()
+    void Scene2(Muharrik::Engine* engine, Muharrik::EntitiesVec& sceneEntities)
     {
+        entt::entity e1 = engine->OnCreateSpriteEntity(Muharrik::SpriteEnum::Test_Duck, 
+            0.0f, 100.0f, 0.0f, 1.0f, 0.5f);
+
+        entt::entity e2 = engine->OnCreateSpriteEntity(Muharrik::SpriteEnum::Test_Pigeon, 
+            250.0f, 150.0f, 0.0f, 1.0f, 2.0f);
+
+        sceneEntities.push_back(e1);
+        sceneEntities.push_back(e2);
+
+        engine->OnAddEntitiesToSceneManager(sceneEntities);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    void GameScenes::InitScenes(Muharrik::Engine* engine)
+    {
+        Muharrik::EntitiesVec sceneEntities;
+
+        Scene1(engine, sceneEntities);
+        sceneEntities.clear();
+
+        // Scene2(engine, sceneEntities);
+        // sceneEntities.clear();
     }
     
+    void GameScenes::AnotherScene(Muharrik::Engine* engine)
+    {
+        Muharrik::EntitiesVec sceneEntities;
+
+        Scene2(engine, sceneEntities);
+        sceneEntities.clear();
+    }
 }

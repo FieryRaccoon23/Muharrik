@@ -44,6 +44,11 @@ target_include_directories(eastl PUBLIC
 )
 target_link_libraries(eastl PUBLIC eabase)
 
+# Ensure EASTL debug/aligned new/delete overloads are linked whenever EASTL is linked
+target_sources(eastl PRIVATE
+    "${CMAKE_SOURCE_DIR}/src/Engine/ThirdParty/eastl_new_delete.cpp"
+)
+
 # ---- Collect engine sources ----
 file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/Engine/*.cpp"

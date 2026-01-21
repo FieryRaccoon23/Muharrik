@@ -14,12 +14,17 @@ namespace Muharrik
     {
         public:
         Scene(){}
-        ~Scene(){}
+        ~Scene()
+        {
+            mID = -1;            
+        }
         void AddEntities(const EntitiesVec& entities);
+        const EntitiesVec& GetEntities() const { return mEntitiesVector;}
+
+        int mID = -1;
 
         private:
         EntitiesVec mEntitiesVector;
-        int mID = -1;
     };
 
 }

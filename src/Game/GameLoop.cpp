@@ -24,6 +24,14 @@ namespace MuharrikGame
 
     void GameLoop::Update(float dt)
     {
+        static int i = 0;
+
+        if(i == 100)
+        {
+            mEngine->OnRemoveSceneFromSceneManager(0);
+            //GameScenes gameScene;
+        }
+        ++i;
     }
 
     void GameLoop::End()

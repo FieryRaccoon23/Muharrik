@@ -25,5 +25,10 @@ namespace Muharrik
 
         mSpriteAssetManager->CreateTexture(e, se);
     }
+
+    void ECS::DestroyEntity(entt::entity e)
+    {
+        mRegistry.destroy(e);
+    }
     
 }

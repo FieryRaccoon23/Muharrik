@@ -11,6 +11,6 @@ namespace MuharrikGame
     {
         public:
         void InitScenes(Muharrik::Engine* engine);
-        void SetStartupScenes();
+        void AnotherScene(Muharrik::Engine* engine);
     };
 }

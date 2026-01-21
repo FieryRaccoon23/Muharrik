@@ -62,11 +62,6 @@ namespace Muharrik
         mSceneManager.ClearScenes();
     }
 
-    int Engine::OnAddEntitiesToSceneManager(EntitiesVec entities)
-    {
-        return mSceneManager.AddScene(entities);
-    }
-
     entt::entity Engine::OnCreateEmptyEntity()
     {
         return mECS.CreateEmptyEntity();
@@ -79,5 +74,24 @@ namespace Muharrik
         mECS.CreateSprite(e, se, x, y, rot, w, h);
 
         return e;
+    }
+
+    void Engine::OnDestroyEntities(const EntitiesVec& entities)
+    {
+        for (entt::entity e : entities)
+        {  
+            mECS.DestroyEntity(e)
+;        }
+    }
+
+    int Engine::OnAddEntitiesToSceneManager(const EntitiesVec& entities)
+    {
+        return mSceneManager.AddScene(entities);
+    }
+
+    void Engine::OnRemoveSceneFromSceneManager(int i)
+    {
+        OnDestroyEntities(mSceneManager.GetEntitiesOfScene(i));
+        mSceneManager.RemoveScene(i);
     }
 }

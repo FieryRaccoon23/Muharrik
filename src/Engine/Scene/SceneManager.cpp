@@ -18,18 +18,19 @@ namespace Muharrik
             mAvailableSpaces.pop();
         }
 
-        Scene* newScene = new Scene();
+        ScenePtr newScene = eastl::make_unique<Scene>();
         newScene->AddEntities(entities);
 
         if(result == -1)
         {
-            mScenesVector.push_back(newScene);
+            mScenesVector.push_back(eastl::move(newScene));
             result = mScenesVector.size() - 1;
         }
         else
         {
-            mScenesVector[result] = newScene;
+            mScenesVector[result] = eastl::move(newScene);
         }
+        mScenesVector[result]->mID = result;
 
         return result;
     }
@@ -42,23 +43,21 @@ namespace Muharrik
             return;
         }
 
-        Scene* s = mScenesVector[i];
+        Scene* s = mScenesVector[i].get();
         if( s != nullptr)
         {
-            delete s;
-            s = nullptr;
-
             mAvailableSpaces.push(i);
+            mScenesVector[i].reset();
         }
     }
 
     void SceneManager::ClearScenes()
     {
-        for(auto s : mScenesVector)
-        {
-            delete s;
-        }
-
         mScenesVector.clear();
+    }
+
+    const EntitiesVec& SceneManager::GetEntitiesOfScene(int i)
+    {
+        return mScenesVector[i]->GetEntities();
     }
 }

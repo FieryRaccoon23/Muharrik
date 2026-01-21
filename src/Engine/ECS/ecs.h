@@ -20,6 +20,7 @@ namespace Muharrik
             float x, float y, float rot, float w, float h);
 
         entt::entity CreateEmptyEntity();
+        void DestroyEntity(entt::entity e);
 
         entt::registry& GetRegistry() { return mRegistry;}
         const entt::registry& GetRegistry() const { return mRegistry; }

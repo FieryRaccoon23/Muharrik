@@ -6,6 +6,7 @@
 #include <EASTL/deque.h>
 #include <EASTL/string.h>
 #include <EASTL/fixed_vector.h>
+#include <EASTL/unique_ptr.h>
 
 #define MAX_SCENES 50
 
@@ -15,7 +16,8 @@ namespace Muharrik
 
     class SceneManager
     {
-        using ScenesVec = eastl::fixed_vector<Scene*, MAX_SCENES, false>;
+        using ScenePtr  = eastl::unique_ptr<Scene>;
+        using ScenesVec = eastl::fixed_vector<ScenePtr, MAX_SCENES, false>;
         using ScenesIDVec = eastl::fixed_vector<int, MAX_SCENES, false>;
 
         public:
@@ -26,6 +28,7 @@ namespace Muharrik
         int AddScene(const EntitiesVec& entities);
         void RemoveScene(int i);
         void ClearScenes();
+        const EntitiesVec& GetEntitiesOfScene(int i);
 
         private:
         ScenesVec mScenesVector;
