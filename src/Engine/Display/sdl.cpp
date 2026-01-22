@@ -126,7 +126,6 @@ namespace Muharrik
     {
         SDL_RenderClear(mRenderer);
 
-        // NOTE: is this expensive per frame ??
         auto view = registry.view<SDLData>();
         const auto& spriteMap = spriteAssetManager->GetRuntimeSpriteAssets();
 
