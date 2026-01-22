@@ -63,7 +63,7 @@ namespace Muharrik
     void Engine::QuitEngine()
     {
         mSDL.QuitSDL();
-        mSpriteAssetManager.DestroySpriteAssetManager(mECS.GetRegistry());
+        mSpriteAssetManager.DestroyTextures(mECS.GetRegistry());
         mSceneManager.ClearScenes();
     }
 
@@ -84,9 +84,10 @@ namespace Muharrik
     void Engine::OnDestroyEntities(const EntitiesVec& entities)
     {
         for (entt::entity e : entities)
-        {  
-            mECS.DestroyEntity(e)
-;        }
+        {
+            mSpriteAssetManager.RemoveEntityFromRuntime(e);
+            mECS.DestroyEntity(e);
+        }
     }
 
     int Engine::OnAddEntitiesToSceneManager(const EntitiesVec& entities)

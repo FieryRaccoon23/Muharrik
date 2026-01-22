@@ -30,7 +30,8 @@ namespace MuharrikGame
         if(i == 100)
         {
             mEngine->OnRemoveSceneFromSceneManager(0);
-            //GameScenes gameScene;
+            GameScenes gameScene;
+            gameScene.AnotherScene(mEngine);
         }
         ++i;
 

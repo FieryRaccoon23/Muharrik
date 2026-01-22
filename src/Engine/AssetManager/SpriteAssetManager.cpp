@@ -1,7 +1,5 @@
 #include "SpriteAssetManager.h"
 
-#include <SDL3_image/SDL_image.h>
-
 #include "Display/sdl.h"
 #include "Components/sdldata.h"
 
@@ -14,34 +12,43 @@ namespace Muharrik
 
     void SpriteAssetManager::CreateTexture(entt::entity e, SpriteEnum se)
     {
-        SDL_Texture* texture = nullptr;
+        auto it = mRuntimeTextureCache.find(se);
 
-        if(mRuntimeTextureCache.contains(se))
+        if (it != mRuntimeTextureCache.end())
         {
-            texture = mRuntimeTextureCache[se];
-        }
-        else
-        {
-            const eastl::string& path = gSpriteAssets.at((int)se);
-            texture = mSDL->LoadPNGTexture(path.c_str());
-            mRuntimeTextureCache.insert({se, texture});
+            auto handle = it->second.lock();
+            if (!handle)
+            {
+                const eastl::string& path = gSpriteAssets.at((int)se);
+                SDL_Texture* raw = mSDL->LoadPNGTexture(path.c_str());
+                handle = MakeTextureHandle(raw);
+                it->second = handle;               
+            }
+
+            mRuntimeSpriteAssets[e] = handle;      
+            return;
         }
 
-        mRuntimeSpriteAssets.insert({e, texture});
+        const eastl::string& path = gSpriteAssets.at((int)se);
+        SDL_Texture* raw = mSDL->LoadPNGTexture(path.c_str());
+        auto handle = MakeTextureHandle(raw);
+
+        mRuntimeTextureCache.insert({ se, handle });
+        mRuntimeSpriteAssets.insert({ e, handle }); 
     }
 
-    void SpriteAssetManager::DestroySpriteAssetManager(entt::registry& registry)
+    void SpriteAssetManager::DestroyTextures(entt::registry& registry)
     {
-        for (auto kv : mRuntimeTextureCache)
-        {
-            SDL_Texture* value = kv.second;
-            SDL_DestroyTexture(value);
-            value = nullptr;
-        }
-
         mRuntimeTextureCache.clear();
         mRuntimeSpriteAssets.clear();
+    }
 
-        registry.clear<SDLData>();
+    void SpriteAssetManager::RemoveEntityFromRuntime(entt::entity e)
+    {
+        auto it = mRuntimeSpriteAssets.find(e);
+        if (it != mRuntimeSpriteAssets.end())
+        {
+            mRuntimeSpriteAssets.erase(it);
+        }
     }
 }

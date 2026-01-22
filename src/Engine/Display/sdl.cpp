@@ -7,6 +7,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3_image/SDL_image.h>
 #include <EASTL/fixed_hash_map.h>
+#include <EASTL/shared_ptr.h>
 
 #include "AssetManager/SpriteAssetManager.h"
 #include "Components/position2D.h"
@@ -102,7 +103,8 @@ namespace Muharrik
 
         // Loads PNG into an SDL_Surface
         SDL_Surface* surf = IMG_Load(absolutePath.c_str());
-        if (!surf) {
+        if (!surf) 
+        {
             std::printf("SDL: IMG_Load failed (%s): %s\n", absolutePath.c_str(), SDL_GetError());
             return nullptr;
         }
@@ -124,6 +126,7 @@ namespace Muharrik
     {
         SDL_RenderClear(mRenderer);
 
+        // NOTE: is this expensive per frame ??
         auto view = registry.view<SDLData>();
         const auto& spriteMap = spriteAssetManager->GetRuntimeSpriteAssets();
 
@@ -132,7 +135,7 @@ namespace Muharrik
             Position2D& pos = registry.get<Position2D>(e);
             Scale2D& scale = registry.get<Scale2D>(e);
 
-            SDL_Texture* t = spriteMap.at(e);
+            SDL_Texture* t = spriteMap.at(e).get();
             float w=0, h=0;
             SDL_GetTextureSize(t, &w, &h);
             SDL_FRect dst;
