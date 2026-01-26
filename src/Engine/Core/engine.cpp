@@ -4,6 +4,8 @@
 
 #include <cstdio>
 
+#include "Extern/TracyProfiler.h"
+
 #define FRAME_DELAY 16 // 60 fps
 
 namespace Muharrik
@@ -44,6 +46,8 @@ namespace Muharrik
 
         while (running) 
         {
+            TracyProfiler::Tracy_FrameMark();
+
             mInputHandler.UpdateInputHandler();
 
             running = mSDL.PollSDL();
@@ -83,6 +87,8 @@ namespace Muharrik
 
     void Engine::OnDestroyEntities(const EntitiesVec& entities)
     {
+        TracyProfiler::Tracy_ZoneScopedNamed("Engine::OnDestroyEntities");
+
         for (entt::entity e : entities)
         {
             mSpriteAssetManager.RemoveEntityFromRuntime(e);

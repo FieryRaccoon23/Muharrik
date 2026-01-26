@@ -20,6 +20,27 @@ add_subdirectory(thirdparty/sdl_image EXCLUDE_FROM_ALL)
 
 find_package(Threads REQUIRED)
 
+# ----------------------------
+# Tracy (profiler)
+# ----------------------------
+option(MUHARRIK_TRACY "Enable Tracy profiling" OFF)
+
+if(MUHARRIK_TRACY)
+    add_library(tracy_client STATIC
+        "${CMAKE_SOURCE_DIR}/extern/tracy/public/TracyClient.cpp"
+    )
+    target_include_directories(tracy_client PUBLIC
+        "${CMAKE_SOURCE_DIR}/extern/tracy/public"
+    )
+
+    target_compile_definitions(tracy_client PUBLIC
+        TRACY_ENABLE
+        TRACY_CALLSTACK=1
+    )
+
+    target_link_libraries(tracy_client PUBLIC Threads::Threads)
+endif()
+
 add_library(taskflow INTERFACE)
 target_include_directories(taskflow INTERFACE
     "${CMAKE_SOURCE_DIR}/thirdparty/taskflow"
@@ -94,6 +115,10 @@ if (ENGINE_SOURCES)
         eabase
     )
 
+    if (TARGET tracy_client)
+        target_link_libraries(muharrik_engine PUBLIC tracy_client)
+    endif()
+
     # NOTE:
     # Do NOT link engine directly into app here.
     # If app links muharrik_game and muharrik_game links muharrik_engine,
@@ -126,6 +151,10 @@ if (GAME_SOURCES)
             "${CMAKE_SOURCE_DIR}/thirdparty/glm"
             "${CMAKE_SOURCE_DIR}/thirdparty/entt/src"
         )
+    endif()
+
+    if (TARGET tracy_client)
+        target_link_libraries(muharrik_game PUBLIC tracy_client)
     endif()
 
     # Link game into app

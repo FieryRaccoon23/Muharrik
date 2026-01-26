@@ -1,11 +1,20 @@
 #!/usr/bin/env bash
 rm -rf build
 
-BUILD_TYPE="${1:-Release}"
+BUILD_TYPE="Release"
+TRACY="OFF"
 
-case "$BUILD_TYPE" in
-  [Dd]ebug)   BUILD_TYPE="Debug" ;;
-  [Rr]elease) BUILD_TYPE="Release" ;;
-esac
+for arg in "$@"; do
+  case "$arg" in
+    [Dd]ebug)   BUILD_TYPE="Debug" ;;
+    [Rr]elease) BUILD_TYPE="Release" ;;
+    tracy|TRACY|--tracy) TRACY="ON" ;;
+    no-tracy|--no-tracy) TRACY="OFF" ;;
+  esac
+done
 
-./gen_build_solution.sh "$BUILD_TYPE"
+if [[ "$TRACY" == "ON" ]]; then
+  ./gen_build_solution.sh "$BUILD_TYPE" tracy
+else
+  ./gen_build_solution.sh "$BUILD_TYPE" no-tracy
+fi
