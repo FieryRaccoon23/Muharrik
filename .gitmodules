@@ -19,3 +19,6 @@
 [submodule "thirdparty/eabase"]
 	path = thirdparty/eabase
 	url = https://github.com/electronicarts/EABase.git
+[submodule "extern/tracy"]
+	path = extern/tracy
+	url = https://github.com/wolfpld/tracy.git
