@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.20)
-project(Muharrik LANGUAGES C CXX)
+
+if(APPLE)
+  project(Muharrik LANGUAGES C CXX OBJC OBJCXX)
+else()
+  project(Muharrik LANGUAGES C CXX)
+endif()
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -70,6 +75,28 @@ target_sources(eastl PRIVATE
     "${CMAKE_SOURCE_DIR}/src/Engine/ThirdParty/eastl_new_delete.cpp"
 )
 
+# ----------------------------
+# llama.cpp (local LLM)
+# ----------------------------
+option(MUHARRIK_LLAMA "Enable llama.cpp integration" ON)
+
+if(MUHARRIK_LLAMA)
+    # Disable llama.cpp extras (faster builds; keeps only libraries)
+    set(LLAMA_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+    set(LLAMA_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    set(LLAMA_BUILD_SERVER OFF CACHE BOOL "" FORCE)
+
+    # ---- Optional GPU backends (pick one if you want) ----
+    # macOS Apple Silicon:
+    # set(GGML_METAL ON CACHE BOOL "" FORCE)
+
+    # Cross-platform GPU (needs Vulkan SDK):
+    # set(GGML_VULKAN ON CACHE BOOL "" FORCE)
+
+    # Add llama.cpp from submodule folder: thirdparty/llama
+    add_subdirectory(thirdparty/llama EXCLUDE_FROM_ALL)
+endif()
+
 # ---- Collect engine sources ----
 file(GLOB_RECURSE ENGINE_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/Engine/*.cpp"
@@ -115,6 +142,19 @@ if (ENGINE_SOURCES)
         eabase
     )
 
+    # ---- Link llama.cpp into engine (app inherits it via game->engine) ----
+    if(MUHARRIK_LLAMA)
+        # llama.cpp exposes C API headers in: thirdparty/llama/include/llama.h
+        target_include_directories(muharrik_engine PUBLIC
+            "${CMAKE_SOURCE_DIR}/thirdparty/llama/include"
+        )
+
+        # Most current llama.cpp builds export a target named "llama"
+        # If your revision differs, run:
+        #   cmake --build build --target help | grep -i llama
+        target_link_libraries(muharrik_engine PUBLIC llama)
+    endif()
+
     if (TARGET tracy_client)
         target_link_libraries(muharrik_engine PUBLIC tracy_client)
     endif()
@@ -151,6 +191,14 @@ if (GAME_SOURCES)
             "${CMAKE_SOURCE_DIR}/thirdparty/glm"
             "${CMAKE_SOURCE_DIR}/thirdparty/entt/src"
         )
+
+        # If you build game without engine but still want llama:
+        if(MUHARRIK_LLAMA)
+            target_include_directories(muharrik_game PUBLIC
+                "${CMAKE_SOURCE_DIR}/thirdparty/llama/include"
+            )
+            target_link_libraries(muharrik_game PUBLIC llama)
+        endif()
     endif()
 
     if (TARGET tracy_client)
@@ -208,7 +256,6 @@ endif()
 #     muharrik_enable_sanitizers(app)
 #   endif()
 # endif()
-
 
 # For packaging
 option(MUHARRIK_PACKAGE "Enable install + packaging rules" OFF)
