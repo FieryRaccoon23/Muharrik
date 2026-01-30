@@ -22,3 +22,6 @@
 [submodule "extern/tracy"]
 	path = extern/tracy
 	url = https://github.com/wolfpld/tracy.git
+[submodule "thirdparty/llama"]
+	path = thirdparty/llama
+	url = https://github.com/ggml-org/llama.cpp.git
