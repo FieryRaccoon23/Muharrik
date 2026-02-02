@@ -91,7 +91,7 @@ namespace Muharrik
 
         for (entt::entity e : entities)
         {
-            mSpriteAssetManager.RemoveEntityFromRuntime(e);
+            mSpriteAssetManager.RemoveEntityFromRuntime(e, mECS.GetRegistry());
             mECS.DestroyEntity(e);
         }
     }

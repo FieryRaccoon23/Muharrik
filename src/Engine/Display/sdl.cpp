@@ -126,24 +126,42 @@ namespace Muharrik
     {
         SDL_RenderClear(mRenderer);
 
-        auto view = registry.view<SDLData>();
-        const auto& spriteMap = spriteAssetManager->GetRuntimeSpriteAssets();
+        const auto& textureMap = spriteAssetManager->GetRuntimeTextureAssets();
 
-        for(const entt::entity e : view)
+        const auto& spriteMap = spriteAssetManager->GetRuntimeBatchedSpriteAssets();
+        for(auto spriteIt = spriteMap.begin(); spriteIt != spriteMap.end(); ++spriteIt)
         {
-            Position2D& pos = registry.get<Position2D>(e);
-            Scale2D& scale = registry.get<Scale2D>(e);
+            SpriteEnum se = spriteIt->first;
+            auto textureIt = textureMap.find(se);
+            const TextureWeak text = textureIt->second;
 
-            SDL_Texture* t = spriteMap.at(e).get();
-            float w=0, h=0;
-            SDL_GetTextureSize(t, &w, &h);
-            SDL_FRect dst;
-            dst.x = pos.mValue.x;
-            dst.y = pos.mValue.y;
-            dst.w = scale.mValue.x * w;
-            dst.h = scale.mValue.y * h;
+            SDL_Texture* t = nullptr;
+            if (auto texShared = textureIt->second.lock()) 
+            {
+                t = texShared.get();
+            }
 
-            SDL_RenderTexture(mRenderer, t, nullptr, &dst);
+            if(t == nullptr)
+            {
+                std::printf("SDL: RenderTexture failed: Texture t is null");
+                continue;
+            }
+
+            for(auto e : spriteIt->second)
+            {
+                Position2D& pos = registry.get<Position2D>(e);
+                Scale2D& scale = registry.get<Scale2D>(e);
+
+                float w=0, h=0;
+                SDL_GetTextureSize(t, &w, &h);
+                SDL_FRect dst;
+                dst.x = pos.mValue.x;
+                dst.y = pos.mValue.y;
+                dst.w = scale.mValue.x * w;
+                dst.h = scale.mValue.y * h;
+
+                SDL_RenderTexture(mRenderer, t, nullptr, &dst);
+            }
         }
 
         SDL_RenderPresent(mRenderer);
