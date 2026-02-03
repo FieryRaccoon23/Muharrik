@@ -12,18 +12,18 @@
 
 namespace MuharrikGame
 {
-    void GameLoop::Init(Muharrik::Engine* engine)
+    void GameLoop::InitImpl(Muharrik::Engine* engine)
     {
         GameScenes gameScene;
         mEngine = engine;
         gameScene.InitScenes(mEngine);
     }
 
-    void GameLoop::Start()
+    void GameLoop::StartImpl()
     {
     }
 
-    void GameLoop::Update(float dt)
+    void GameLoop::UpdateImpl(float dt)
     {
         static int i = 0;
 
@@ -44,11 +44,11 @@ namespace MuharrikGame
         }   
     }
 
-    void GameLoop::End()
+    void GameLoop::EndImpl()
     {
     }
 
-    void GameLoop::Finish()
+    void GameLoop::FinishImpl()
     {
     }
     

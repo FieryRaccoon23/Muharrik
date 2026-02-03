@@ -14,7 +14,8 @@ namespace Muharrik
     {
         public:
         void InitEngine();
-        void MainLoop(IGame& game);
+        template<class Derived>
+        void MainLoop(IGame<Derived>& game);
         void QuitEngine();
 
         entt::entity OnCreateEmptyEntity();
@@ -35,3 +36,5 @@ namespace Muharrik
         InputHandler mInputHandler;
     };
 }
+
+#include "engine.inl"

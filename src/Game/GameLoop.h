@@ -9,14 +9,14 @@ namespace Muharrik
 
 namespace MuharrikGame
 {
-    class GameLoop : public Muharrik::IGame
+    class GameLoop : public Muharrik::IGame<MuharrikGame::GameLoop>
     {
         public:
-        void Init(Muharrik::Engine* engine) override;
-        void Start() override;
-        void Update(float dt) override;
-        void End() override;
-        void Finish() override;
+        void InitImpl(Muharrik::Engine* engine);
+        void StartImpl();
+        void UpdateImpl(float dt);
+        void EndImpl();
+        void FinishImpl();
 
         private:
         Muharrik::Engine* mEngine;

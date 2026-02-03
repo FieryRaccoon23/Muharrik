@@ -4,14 +4,37 @@ namespace Muharrik
 {
     class Engine;
 
+    template<class Derived>
     class IGame
     {
         public:
-        virtual ~IGame() = default;
-        virtual void Init(Engine* engine) = 0;
-        virtual void Start() = 0;
-        virtual void Update(float dt) = 0;
-        virtual void End() = 0;
-        virtual void Finish() = 0;
+        void Init(Engine* engine)
+        {
+            static_cast<Derived*>(this)->InitImpl(engine); 
+        }
+
+        void Start()
+        {
+            static_cast<Derived*>(this)->StartImpl(); 
+        }
+
+        void Update(float dt)
+        {
+            static_cast<Derived*>(this)->UpdateImpl(dt); 
+        }
+
+        void End()
+        {
+            static_cast<Derived*>(this)->EndImpl(); 
+        }
+
+        void Finish()
+        {
+            static_cast<Derived*>(this)->FinishImpl(); 
+        }
+
+        protected:
+        IGame() = default;
+        ~IGame() = default;
     };
 }

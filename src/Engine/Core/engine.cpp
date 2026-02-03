@@ -4,8 +4,6 @@
 
 #include <cstdio>
 
-#include "Extern/TracyProfiler.h"
-
 #define FRAME_DELAY 16 // 60 fps
 
 namespace Muharrik
@@ -36,32 +34,6 @@ namespace Muharrik
         // Delegates
         //OnCreateEmptyEntityDelegate.connect<&Engine::OnCreateEmptyEntity>(this);
         //OnCreateSpriteEntityDelegate.connect<&Engine::OnCreateSpriteEntity>(this);
-    }
-
-    void Engine::MainLoop(IGame& game)
-    {
-        bool running = true;
-
-        game.Init(this);
-
-        while (running) 
-        {
-            TracyProfiler::Tracy_FrameMark();
-
-            mInputHandler.UpdateInputHandler();
-
-            running = mSDL.PollSDL();
-
-            // NOTE: Pass correct frame rate
-            game.Update(0.0f);
-
-            mSDL.RenderTexture(&mSpriteAssetManager, mECS.GetRegistry());
-
-            //mSDL.DelaySDL(FRAME_DELAY);
-        }
-
-        game.Finish();
-
     }
 
     void Engine::QuitEngine()
