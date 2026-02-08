@@ -22,7 +22,8 @@ namespace Muharrik
         void QuitSDL();
         void DelaySDL(uint32_t ms);
         SDL_Texture* LoadPNGTexture (const char* relativePath) const;
-        void RenderTexture(const SpriteAssetManager* spriteAssetManager, entt::registry& registry);
+        void RenderTexture(const SpriteAssetManager* spriteAssetManager, 
+            entt::registry& registry, const entt::entity camera2DEntity);
         void ToggleFullScreen() const;
 
         private:

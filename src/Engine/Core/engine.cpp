@@ -1,7 +1,6 @@
 #include "engine.h"
 
 #include "factory.h"
-
 #include <cstdio>
 
 #define FRAME_DELAY 16 // 60 fps
@@ -31,6 +30,10 @@ namespace Muharrik
         //Input
         mInputHandler.InitInputHandler();
 
+        // Create Camera
+        mCamera2DEntity = mECS.CreateEmptyEntity();
+        mECS.CreateCamera2D(mCamera2DEntity, 0.0f, 0.0f, 0.0f, 1.0f);
+        
         // Delegates
         //OnCreateEmptyEntityDelegate.connect<&Engine::OnCreateEmptyEntity>(this);
         //OnCreateSpriteEntityDelegate.connect<&Engine::OnCreateSpriteEntity>(this);

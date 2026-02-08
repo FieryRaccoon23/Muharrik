@@ -20,7 +20,7 @@ namespace Muharrik
             // NOTE: Pass correct frame rate
             game.Update(0.0f);
 
-            mSDL.RenderTexture(&mSpriteAssetManager, mECS.GetRegistry());
+            mSDL.RenderTexture(&mSpriteAssetManager, mECS.GetRegistry(), mCamera2DEntity);
 
             //mSDL.DelaySDL(FRAME_DELAY);
         }

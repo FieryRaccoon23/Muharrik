@@ -1,6 +1,7 @@
 #include "ecs.h"
 
 #include "Entities/sprite.h"
+#include "Entities/camera2D.h"
 #include "AssetManager/SpriteAssetManager.h"
 
 // #include <taskflow/taskflow.hpp>
@@ -24,6 +25,12 @@ namespace Muharrik
         Sprite::CreateSpriteEntity(mRegistry, e, x, y, rot, w, h);
 
         mSpriteAssetManager->CreateTexture(e, se);
+    }
+
+    void ECS::CreateCamera2D(entt::entity e,
+            float x, float y, float rot, float fov)
+    {
+        Camera2D::CreateCamera2DEntity(mRegistry, e, x, y, rot, fov);
     }
 
     void ECS::DestroyEntity(entt::entity e)

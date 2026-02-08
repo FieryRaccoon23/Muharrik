@@ -27,6 +27,9 @@ namespace Muharrik
 
         const InputHandler& GetInputHandler() const { return mInputHandler;}
         const Muharrik::SDL& GetSDL() const { return mSDL;}
+        entt::entity GetCamera2DEntity() const { return mCamera2DEntity;}
+        const Muharrik::ECS& GetECS() const { return mECS;}
+        Muharrik::ECS& GetECS() { return mECS;}
 
         private:
         Muharrik::SDL mSDL;
@@ -34,6 +37,7 @@ namespace Muharrik
         Muharrik::ECS mECS;
         SceneManager mSceneManager;
         InputHandler mInputHandler;
+        entt::entity mCamera2DEntity;
     };
 }
 

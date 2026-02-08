@@ -1,6 +1,8 @@
 #pragma once
 
+#include <entt/entt.hpp>
 #include "Core/IGame.h"
+#include "Components/position2D.h"
 
 namespace Muharrik
 {
@@ -20,6 +22,7 @@ namespace MuharrikGame
 
         private:
         Muharrik::Engine* mEngine;
-
+        entt::entity mCamera2DEntity;
+        Muharrik::Position2D* mCameraPos;
     };
 }

@@ -14,6 +14,7 @@
 #include "Components/rotation2D.h"
 #include "Components/scale2D.h"
 #include "Components/sdldata.h"
+#include "Components/fov.h"
 
 namespace Muharrik
 {
@@ -122,9 +123,13 @@ namespace Muharrik
         return texture;
     }
 
-    void SDL::RenderTexture(const SpriteAssetManager* spriteAssetManager, entt::registry& registry)
+    void SDL::RenderTexture(const SpriteAssetManager* spriteAssetManager, 
+        entt::registry& registry, const entt::entity camera2DEntity)
     {
         SDL_RenderClear(mRenderer);
+
+        const Position2D& cameraPos = registry.get<Position2D>(camera2DEntity);
+        const FoV& cameraFov = registry.get<FoV>(camera2DEntity);
 
         const auto& textureMap = spriteAssetManager->GetRuntimeTextureAssets();
 
@@ -155,8 +160,8 @@ namespace Muharrik
                 float w=0, h=0;
                 SDL_GetTextureSize(t, &w, &h);
                 SDL_FRect dst;
-                dst.x = pos.mValue.x;
-                dst.y = pos.mValue.y;
+                dst.x = pos.mValue.x + cameraPos.mValue.x;
+                dst.y = pos.mValue.y + cameraPos.mValue.y;
                 dst.w = scale.mValue.x * w;
                 dst.h = scale.mValue.y * h;
 

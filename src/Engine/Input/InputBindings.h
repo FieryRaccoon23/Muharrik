@@ -14,6 +14,11 @@ namespace Muharrik
         RAlt,
         Enter,
 
+        Up,
+        Down,
+        Left,
+        Right,
+
         MAX_COUNT
     };
 
@@ -26,10 +31,15 @@ namespace Muharrik
     false
     >;
 
-    inline static KeyBindingMap gKeyBindings{
+    inline static KeyBindingMap gKeyBindings
+    {
         { InputAction::LAlt, SDL_Scancode::SDL_SCANCODE_LALT },
         { InputAction::RAlt, SDL_Scancode::SDL_SCANCODE_RALT },
-        { InputAction::Enter, SDL_Scancode::SDL_SCANCODE_RETURN }
+        { InputAction::Enter, SDL_Scancode::SDL_SCANCODE_RETURN },
+        { InputAction::Up, SDL_Scancode::SDL_SCANCODE_UP },
+        { InputAction::Down, SDL_Scancode::SDL_SCANCODE_DOWN },
+        { InputAction::Left, SDL_Scancode::SDL_SCANCODE_LEFT },
+        { InputAction::Right, SDL_Scancode::SDL_SCANCODE_RIGHT }
     };
 
 }

@@ -5,7 +5,6 @@
 
 #include "GameScenes.h"
 
-#include <entt/entt.hpp>
 #include <EASTL/string.h>
 #include <EASTL/fixed_vector.h>
 #include <cstdio>
@@ -17,6 +16,9 @@ namespace MuharrikGame
         GameScenes gameScene;
         mEngine = engine;
         gameScene.InitScenes(mEngine);
+
+        mCamera2DEntity = mEngine->GetCamera2DEntity();
+        mCameraPos = &mEngine->GetECS().GetRegistry().get<Muharrik::Position2D>(mCamera2DEntity);
     }
 
     void GameLoop::StartImpl()
@@ -41,7 +43,26 @@ namespace MuharrikGame
             mEngine->GetInputHandler().IsActionPressed(Muharrik::InputAction::Enter))
         {
             mEngine->GetSDL().ToggleFullScreen();
-        }   
+        }
+        
+        static float cameraSpeed = 1.0f;
+        if (mEngine->GetInputHandler().IsActionDown(Muharrik::InputAction::Up))
+        {
+            mCameraPos->mValue.y += cameraSpeed;
+        }
+        else if (mEngine->GetInputHandler().IsActionDown(Muharrik::InputAction::Down))
+        {
+            mCameraPos->mValue.y -= cameraSpeed;
+        }
+
+        if (mEngine->GetInputHandler().IsActionDown(Muharrik::InputAction::Right))
+        {
+            mCameraPos->mValue.x -= cameraSpeed;
+        }
+        else if (mEngine->GetInputHandler().IsActionDown(Muharrik::InputAction::Left))
+        {
+            mCameraPos->mValue.x += cameraSpeed;
+        }
     }
 
     void GameLoop::EndImpl()
