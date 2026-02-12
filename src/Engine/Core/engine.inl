@@ -1,5 +1,7 @@
 #include "Extern/TracyProfiler.h"
 
+#include "LLM/LlamaInfer.h"
+
 namespace Muharrik
 {
     template<class Derived>
@@ -9,16 +11,20 @@ namespace Muharrik
 
         game.Init(this);
 
+        LlamaInfer infer;
+        //infer.TestLlama();
+
         while (running) 
         {
             TracyProfiler::Tracy_FrameMark();
+
+            float dt = GetDeltaTimeSeconds();
 
             mInputHandler.UpdateInputHandler();
 
             running = mSDL.PollSDL();
 
-            // NOTE: Pass correct frame rate
-            game.Update(0.0f);
+            game.Update(dt);
 
             mSDL.RenderTexture(&mSpriteAssetManager, mECS.GetRegistry(), mCamera2DEntity);
 

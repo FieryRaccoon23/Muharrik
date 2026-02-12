@@ -33,7 +33,7 @@ namespace Muharrik
         // Create Camera
         mCamera2DEntity = mECS.CreateEmptyEntity();
         mECS.CreateCamera2D(mCamera2DEntity, 0.0f, 0.0f, 0.0f, 1.0f);
-        
+
         // Delegates
         //OnCreateEmptyEntityDelegate.connect<&Engine::OnCreateEmptyEntity>(this);
         //OnCreateSpriteEntityDelegate.connect<&Engine::OnCreateSpriteEntity>(this);
@@ -44,6 +44,20 @@ namespace Muharrik
         mSDL.QuitSDL();
         mSpriteAssetManager.DestroyTextures(mECS.GetRegistry());
         mSceneManager.ClearScenes();
+    }
+
+
+    float Engine::GetDeltaTimeSeconds()
+    {
+        static Uint64 last = SDL_GetPerformanceCounter();
+
+        Uint64 now = SDL_GetPerformanceCounter();
+        Uint64 freq = SDL_GetPerformanceFrequency();
+
+        float dt = (float)(now - last) / (float)freq;
+        last = now;
+
+        return dt;
     }
 
     entt::entity Engine::OnCreateEmptyEntity()

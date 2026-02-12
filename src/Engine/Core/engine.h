@@ -38,6 +38,8 @@ namespace Muharrik
         SceneManager mSceneManager;
         InputHandler mInputHandler;
         entt::entity mCamera2DEntity;
+
+        float GetDeltaTimeSeconds();
     };
 }
 

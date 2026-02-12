@@ -27,15 +27,20 @@ namespace MuharrikGame
 
     void GameLoop::UpdateImpl(float dt)
     {
-        static int i = 0;
-
-        if(i == 100)
+        static float i = 0.0f;
+        static bool done = false;
+        if(i >= 5.0f)
         {
             mEngine->OnRemoveSceneFromSceneManager(0);
             GameScenes gameScene;
             gameScene.AnotherScene(mEngine);
+            done = true;
+            i = 0.0f;
         }
-        ++i;
+        if(!done)
+            i += dt;
+
+        
 
         // Add in player input
         if ((mEngine->GetInputHandler().IsActionDown(Muharrik::InputAction::LAlt) ||
