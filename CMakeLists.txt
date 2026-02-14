@@ -26,6 +26,35 @@ add_subdirectory(thirdparty/sdl_image EXCLUDE_FROM_ALL)
 find_package(Threads REQUIRED)
 
 # ----------------------------
+# RmlUi + FreeType (required by default font engine)
+# ----------------------------
+option(MUHARRIK_RMLUI "Enable RmlUi integration" ON)
+
+if(MUHARRIK_RMLUI)
+    # ---- FreeType (dependency of RmlUi default font engine) ----
+    # Build FreeType from submodule: thirdparty/freetype
+    # RmlUi expects a target named Freetype::Freetype.
+    # The FreeType submodule often exports a target called 'freetype', so we create an ALIAS if needed.
+
+    # Prefer static build to match your project
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
+    add_subdirectory(thirdparty/freetype EXCLUDE_FROM_ALL)
+
+    # Create the expected target name if the submodule only defines 'freetype'
+    if(TARGET freetype AND NOT TARGET Freetype::Freetype)
+        add_library(Freetype::Freetype ALIAS freetype)
+    endif()
+
+    # ---- RmlUi ----
+    set(RMLUI_SAMPLES OFF CACHE BOOL "" FORCE)
+    set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+
+    add_subdirectory(thirdparty/rmlui EXCLUDE_FROM_ALL)
+endif()
+
+# ----------------------------
 # Tracy (profiler)
 # ----------------------------
 option(MUHARRIK_TRACY "Enable Tracy profiling" OFF)
@@ -86,13 +115,6 @@ if(MUHARRIK_LLAMA)
     set(LLAMA_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
     set(LLAMA_BUILD_SERVER OFF CACHE BOOL "" FORCE)
 
-    # ---- Optional GPU backends (pick one if you want) ----
-    # macOS Apple Silicon:
-    # set(GGML_METAL ON CACHE BOOL "" FORCE)
-
-    # Cross-platform GPU (needs Vulkan SDK):
-    # set(GGML_VULKAN ON CACHE BOOL "" FORCE)
-
     # Add llama.cpp from submodule folder: thirdparty/llama
     add_subdirectory(thirdparty/llama EXCLUDE_FROM_ALL)
 endif()
@@ -142,44 +164,43 @@ if (ENGINE_SOURCES)
         eabase
     )
 
+    # ---- Link RmlUi into engine (robust target selection) ----
+    if(MUHARRIK_RMLUI)
+        if(TARGET RmlUi::RmlUi)
+            target_link_libraries(muharrik_engine PUBLIC RmlUi::RmlUi)
+        elseif(TARGET RmlUi::Core)
+            target_link_libraries(muharrik_engine PUBLIC RmlUi::Core)
+        elseif(TARGET RmlUiCore)
+            target_link_libraries(muharrik_engine PUBLIC RmlUiCore)
+        else()
+            message(FATAL_ERROR "RmlUi targets not found. Expected RmlUi::RmlUi or RmlUi::Core (or RmlUiCore).")
+        endif()
+    endif()
+
     # ---- Link llama.cpp into engine (app inherits it via game->engine) ----
     if(MUHARRIK_LLAMA)
-        # llama.cpp exposes C API headers in: thirdparty/llama/include/llama.h
         target_include_directories(muharrik_engine PUBLIC
             "${CMAKE_SOURCE_DIR}/thirdparty/llama/include"
         )
-
-        # Most current llama.cpp builds export a target named "llama"
-        # If your revision differs, run:
-        #   cmake --build build --target help | grep -i llama
         target_link_libraries(muharrik_engine PUBLIC llama)
     endif()
 
     if (TARGET tracy_client)
         target_link_libraries(muharrik_engine PUBLIC tracy_client)
     endif()
-
-    # NOTE:
-    # Do NOT link engine directly into app here.
-    # If app links muharrik_game and muharrik_game links muharrik_engine,
-    # linking engine again causes: ld: warning: ignoring duplicate libraries: 'libmuharrik_engine.a'
 endif()
 
 # Create game library ONLY when you actually have game sources
 if (GAME_SOURCES)
     add_library(muharrik_game STATIC ${GAME_SOURCES})
 
-    # Include root for game so you can do: #include "Player/player.h"
-    # (if file is src/Game/Player/player.h)
     target_include_directories(muharrik_game PUBLIC
         "${CMAKE_SOURCE_DIR}/src/Game"
     )
 
-    # Game should see engine headers (and inherit engine deps) if engine exists
     if (TARGET muharrik_engine)
         target_link_libraries(muharrik_game PUBLIC muharrik_engine)
     else()
-        # If you ever build game without engine, it still needs core deps
         target_link_libraries(muharrik_game PUBLIC
             SDL3::SDL3-static
             SDL3_image::SDL3_image-static
@@ -192,12 +213,24 @@ if (GAME_SOURCES)
             "${CMAKE_SOURCE_DIR}/thirdparty/entt/src"
         )
 
-        # If you build game without engine but still want llama:
         if(MUHARRIK_LLAMA)
             target_include_directories(muharrik_game PUBLIC
                 "${CMAKE_SOURCE_DIR}/thirdparty/llama/include"
             )
             target_link_libraries(muharrik_game PUBLIC llama)
+        endif()
+
+        # ---- Link RmlUi into game fallback (robust target selection) ----
+        if(MUHARRIK_RMLUI)
+            if(TARGET RmlUi::RmlUi)
+                target_link_libraries(muharrik_game PUBLIC RmlUi::RmlUi)
+            elseif(TARGET RmlUi::Core)
+                target_link_libraries(muharrik_game PUBLIC RmlUi::Core)
+            elseif(TARGET RmlUiCore)
+                target_link_libraries(muharrik_game PUBLIC RmlUiCore)
+            else()
+                message(FATAL_ERROR "RmlUi targets not found. Expected RmlUi::RmlUi or RmlUi::Core (or RmlUiCore).")
+            endif()
         endif()
     endif()
 
@@ -205,57 +238,12 @@ if (GAME_SOURCES)
         target_link_libraries(muharrik_game PUBLIC tracy_client)
     endif()
 
-    # Link game into app
     target_link_libraries(app PRIVATE muharrik_game)
 else()
-    # Optional fallback: if there's no game target, but engine exists, link engine into app.
     if (TARGET muharrik_engine)
         target_link_libraries(app PRIVATE muharrik_engine)
     endif()
 endif()
-
-# ----------------------------
-# Sanitizers (target-based)
-# ----------------------------
-# option(MUHARRIK_SANITIZE "Enable sanitizers (address/undefined)" ON)
-# option(MUHARRIK_UBSAN "Also enable UBSan" ON)
-
-# function(muharrik_enable_sanitizers target_name)
-#   if(MSVC)
-#     message(WARNING "MUHARRIK_SANITIZE: Use clang-cl or Visual Studio AddressSanitizer support.")
-#     return()
-#   endif()
-
-#   # These should apply only to your code targets
-#   target_compile_options(${target_name} PRIVATE
-#     -fno-omit-frame-pointer
-#     -g
-#     -fsanitize=address
-#   )
-#   target_link_options(${target_name} PRIVATE
-#     -fsanitize=address
-#   )
-
-#   if(MUHARRIK_UBSAN)
-#     target_compile_options(${target_name} PRIVATE -fsanitize=undefined)
-#     target_link_options(${target_name} PRIVATE -fsanitize=undefined)
-#   endif()
-# endfunction()
-
-# if(MUHARRIK_SANITIZE)
-#   # Enable on whatever targets exist
-#   if(TARGET muharrik_engine)
-#     muharrik_enable_sanitizers(muharrik_engine)
-#   endif()
-
-#   if(TARGET muharrik_game)
-#     muharrik_enable_sanitizers(muharrik_game)
-#   endif()
-
-#   if(TARGET app)
-#     muharrik_enable_sanitizers(app)
-#   endif()
-# endif()
 
 # For packaging
 option(MUHARRIK_PACKAGE "Enable install + packaging rules" OFF)

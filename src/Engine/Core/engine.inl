@@ -2,6 +2,8 @@
 
 #include "LLM/LlamaInfer.h"
 
+#include <RmlUi/Core/Types.h>
+
 namespace Muharrik
 {
     template<class Derived>
