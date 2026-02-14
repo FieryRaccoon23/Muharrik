@@ -25,3 +25,9 @@
 [submodule "thirdparty/llama"]
 	path = thirdparty/llama
 	url = https://github.com/ggml-org/llama.cpp.git
+[submodule "thirdparty/rmlui"]
+	path = thirdparty/rmlui
+	url = https://github.com/mikke89/RmlUi.git
+[submodule "thirdparty/freetype"]
+	path = thirdparty/freetype
+	url = https://gitlab.freedesktop.org/freetype/freetype.git
