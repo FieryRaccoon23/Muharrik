@@ -1,6 +1,6 @@
 #include "SpriteAssetManager.h"
 
-#include "Display/sdl.h"
+#include "Display/renderer2D.h"
 #include "Components/sdldata.h"
 
 namespace Muharrik

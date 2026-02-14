@@ -1,7 +1,7 @@
 #pragma once
 
 #include "IGame.h"
-#include "Display/sdl.h"
+#include "Display/renderer2D.h"
 #include "ECS/ecs.h"
 #include "AssetManager/SpriteAssetManager.h"
 #include "AssetManager/SpriteSerializedData.h"
