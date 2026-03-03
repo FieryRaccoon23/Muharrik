@@ -38,8 +38,6 @@ namespace Muharrik
         // Add to batch sprite
         int index = static_cast<int>(se);
         mRuntimeBatchedSprites[index].push_back(e);
-
-        // Set sdl data
     }
 
     void SpriteAssetManager::DestroyTextures(entt::registry& registry)
