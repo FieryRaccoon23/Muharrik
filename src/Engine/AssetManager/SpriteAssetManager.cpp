@@ -2,66 +2,61 @@
 
 #include "Display/renderer2D.h"
 #include "Components/sdldata.h"
+#include "Util/eastl_vector_util.h"
 
 namespace Muharrik
 {
     void SpriteAssetManager::InitSpriteAssetManager(const SDL* sdl)
     {
         mSDL = sdl;
+
+        for(int i = 0; i < static_cast<int>(SpriteEnum::MAX_COUNT); ++i)
+        {
+            TextureEntityVector entityVec;
+            mRuntimeBatchedSprites.push_back(entityVec);
+        }
     }
 
     void SpriteAssetManager::CreateTexture(entt::entity e, SpriteEnum se)
     {
+        // Add to dictionary if the texture not loaded yet
         auto it = mRuntimeTextureCache.find(se);
+
+        SDL_Texture* texture = nullptr;
 
         if (it != mRuntimeTextureCache.end())
         {
-            auto handle = it->second.lock();
-            if (!handle)
-            {
-                const eastl::string& path = gSpriteAssets.at((int)se);
-                SDL_Texture* raw = mSDL->LoadPNGTexture(path.c_str());
-                handle = MakeTextureHandle(raw);
-                it->second = handle;               
-            }
-
-            mRuntimeSpriteAssets[e] = handle;      
-            return;
-        }
-
-        const eastl::string& path = gSpriteAssets.at((int)se);
-        SDL_Texture* raw = mSDL->LoadPNGTexture(path.c_str());
-        auto handle = MakeTextureHandle(raw);
-
-        mRuntimeTextureCache.insert({ se, handle });
-        mRuntimeSpriteAssets.insert({ e, handle }); 
-
-        // Add to batch
-        auto batchIt = mRuntimeBatchedTextures.find(se);
-        if (batchIt != mRuntimeBatchedTextures.end())
-        {
-            TextureEntitySet& currSet = batchIt->second;
-            currSet.insert(e);
+            texture = it->second;
         }
         else
         {
-            TextureEntitySet newSet;
-            newSet.insert(e);
-            mRuntimeBatchedTextures.insert({se, newSet});
+            const eastl::string& path = gSpriteAssets.at((int)se);
+            texture = mSDL->LoadPNGTexture(path.c_str());
+            mRuntimeTextureCache.insert({ se, texture });
         }
+
+        // Add to batch sprite
+        int index = static_cast<int>(se);
+        mRuntimeBatchedSprites[index].push_back(e);
+
+        // Set sdl data
     }
 
     void SpriteAssetManager::DestroyTextures(entt::registry& registry)
     {
+        // Clear texture dictionary
+        for(auto it : mRuntimeTextureCache)
+        {
+            SDL_DestroyTexture(it.second);
+        }
         mRuntimeTextureCache.clear();
-        mRuntimeSpriteAssets.clear();
 
         // Clear batch
-        for(auto it : mRuntimeBatchedTextures)
+        for(auto it : mRuntimeBatchedSprites)
         {
-            it.second.clear();
+            it.clear();
         }
-        mRuntimeBatchedTextures.clear();
+        mRuntimeBatchedSprites.clear();
     }
 
     void SpriteAssetManager::RemoveEntityFromRuntime(entt::entity e, entt::registry& registry)
@@ -73,18 +68,16 @@ namespace Muharrik
 
         // Remove from batch
         SDLData sdlData = registry.get<SDLData>(e);
-        TextureEntitySet& textureSet = mRuntimeBatchedTextures[sdlData.mTextureID];
-        textureSet.erase(e);
-        if(textureSet.size() == 0)
-        {
-            mRuntimeBatchedTextures.erase(sdlData.mTextureID);
-        }
+        int index = static_cast<int>(sdlData.mTextureID);
+        TextureEntityVector& entityVec = mRuntimeBatchedSprites[index];
 
-        // Remove reference
-        auto it = mRuntimeSpriteAssets.find(e);
-        if (it != mRuntimeSpriteAssets.end())
+        erase_unordered(entityVec, e);
+
+        // If count goes to 0, release the texture
+        if(entityVec.size() == 0)
         {
-            mRuntimeSpriteAssets.erase(it);
+            SDL_DestroyTexture(mRuntimeTextureCache[sdlData.mTextureID]);
+            mRuntimeTextureCache.erase(sdlData.mTextureID);
         }
     }
 }

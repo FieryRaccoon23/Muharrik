@@ -19,18 +19,21 @@ namespace Muharrik
         return e;
     }
 
-    void ECS::CreateSprite(entt::entity e, SpriteEnum se, 
+    entt::entity ECS::CreateSprite(SpriteEnum se, 
             float x, float y, float rot, float w, float h)
     {
-        Sprite::CreateSpriteEntity(mRegistry, e, x, y, rot, w, h);
-
+        entt::entity e = CreateEmptyEntity();
+        Sprite::CreateSpriteEntity(mRegistry, e, x, y, rot, w, h, se);
         mSpriteAssetManager->CreateTexture(e, se);
+
+        return e;
     }
 
-    void ECS::CreateCamera2D(entt::entity e,
-            float x, float y, float rot, float fov)
+    entt::entity ECS::CreateCamera2D(float x, float y, float rot, float fov)
     {
+        entt::entity e = CreateEmptyEntity();
         Camera2D::CreateCamera2DEntity(mRegistry, e, x, y, rot, fov);
+        return e;
     }
 
     void ECS::DestroyEntity(entt::entity e)

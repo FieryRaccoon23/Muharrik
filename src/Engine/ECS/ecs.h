@@ -16,11 +16,10 @@ namespace Muharrik
 
         // Factory constructors for entities
 
-        void CreateSprite(entt::entity e, SpriteEnum se,
+        entt::entity CreateSprite(SpriteEnum se,
             float x, float y, float rot, float w, float h);
 
-        void CreateCamera2D(entt::entity e,
-            float x, float y, float rot, float fov);
+        entt::entity CreateCamera2D(float x, float y, float rot, float fov);
 
         entt::entity CreateEmptyEntity();
         void DestroyEntity(entt::entity e);

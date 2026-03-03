@@ -5,17 +5,19 @@
 #include "Components/scale2D.h"
 #include "Components/sdldata.h"
 
+#include "AssetManager/SpriteSerializedData.h"
+
 namespace Muharrik
 {
     namespace Sprite
     {
         void CreateSpriteEntity(entt::registry& registry, entt::entity e,
-            float x, float y, float rot, float w, float h)
+            float x, float y, float rot, float w, float h, SpriteEnum se)
         {
             registry.emplace<Position2D>(e, x, y);
             registry.emplace<Rotation2D>(e, rot);
             registry.emplace<Scale2D>(e, w, h);
-            registry.emplace<SDLData>(e);
+            registry.emplace<SDLData>(e, se);
         }
     }
 }

@@ -133,39 +133,39 @@ namespace Muharrik
 
         const auto& textureMap = spriteAssetManager->GetRuntimeTextureAssets();
 
-        const auto& spriteMap = spriteAssetManager->GetRuntimeBatchedSpriteAssets();
-        for(auto spriteIt = spriteMap.begin(); spriteIt != spriteMap.end(); ++spriteIt)
+        const auto& spriteVec = spriteAssetManager->GetRuntimeBatchedSpriteAssets();
+        for(int i = 0; i < spriteVec.size(); ++i)
         {
-            SpriteEnum se = spriteIt->first;
-            auto textureIt = textureMap.find(se);
-            const TextureWeak text = textureIt->second;
-
-            SDL_Texture* t = nullptr;
-            if (auto texShared = textureIt->second.lock()) 
+            const auto& entityVec = spriteVec[i];
+            if(entityVec.size() == 0)
             {
-                t = texShared.get();
+                continue;
             }
 
-            if(t == nullptr)
+            SpriteEnum se = static_cast<SpriteEnum>(i);
+            auto textureIt = textureMap.find(se);
+            SDL_Texture* texture = textureIt->second;
+
+            if(texture == nullptr)
             {
                 std::printf("SDL: RenderTexture failed: Texture t is null");
                 continue;
             }
 
-            for(auto e : spriteIt->second)
+            for(auto e : entityVec)
             {
                 Position2D& pos = registry.get<Position2D>(e);
                 Scale2D& scale = registry.get<Scale2D>(e);
 
                 float w=0, h=0;
-                SDL_GetTextureSize(t, &w, &h);
+                SDL_GetTextureSize(texture, &w, &h);
                 SDL_FRect dst;
                 dst.x = pos.mValue.x + cameraPos.mValue.x;
                 dst.y = pos.mValue.y + cameraPos.mValue.y;
                 dst.w = scale.mValue.x * w;
                 dst.h = scale.mValue.y * h;
 
-                SDL_RenderTexture(mRenderer, t, nullptr, &dst);
+                SDL_RenderTexture(mRenderer, texture, nullptr, &dst);
             }
         }
 

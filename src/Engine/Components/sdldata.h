@@ -9,11 +9,19 @@ namespace Muharrik
     struct SDLData
     {
         public:
-        SpriteEnum mTextureID = SpriteEnum::NONE;
+        SDLData() : mTextureID(SpriteEnum::NONE) 
+        {
+        }
+        SDLData(SpriteEnum value) : mTextureID(value) 
+        {
+        }
 
         ~SDLData()
         {
             mTextureID = SpriteEnum::NONE;
         }
+
+        SpriteEnum mTextureID = SpriteEnum::NONE;
+
     };
 }

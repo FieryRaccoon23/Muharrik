@@ -31,8 +31,7 @@ namespace Muharrik
         mInputHandler.InitInputHandler();
 
         // Create Camera
-        mCamera2DEntity = mECS.CreateEmptyEntity();
-        mECS.CreateCamera2D(mCamera2DEntity, 0.0f, 0.0f, 0.0f, 1.0f);
+        mCamera2DEntity = mECS.CreateCamera2D(0.0f, 0.0f, 0.0f, 1.0f);
 
         // Delegates
         //OnCreateEmptyEntityDelegate.connect<&Engine::OnCreateEmptyEntity>(this);
@@ -68,10 +67,7 @@ namespace Muharrik
     entt::entity Engine::OnCreateSpriteEntity(SpriteEnum se, 
             float x, float y, float rot, float w, float h)
     {
-        entt::entity e = mECS.CreateEmptyEntity();
-        mECS.CreateSprite(e, se, x, y, rot, w, h);
-
-        return e;
+        return mECS.CreateSprite(se, x, y, rot, w, h);
     }
 
     void Engine::OnDestroyEntities(const EntitiesVec& entities)

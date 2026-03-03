@@ -5,6 +5,7 @@
 #include <EASTL/string.h>
 #include <EASTL/span.h>
 #include <entt/entt.hpp>
+#include <RmlUi/Core.h>
 
 struct SDL_Window;
 struct SDL_Renderer;
