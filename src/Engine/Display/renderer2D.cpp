@@ -16,6 +16,8 @@
 #include "Components/sdldata.h"
 #include "Components/fov.h"
 
+#include "Backends/RmlUi_Platform_SDL.h"
+
 namespace Muharrik
 {
     int SDL::InitSDL()
@@ -94,6 +96,10 @@ namespace Muharrik
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
+            // Forward event to RmlUi first
+            RmlSDL::InputEventHandler(mRmlContext, mWindow, e);
+
+            // Then your own event handling
             if (e.type == SDL_EVENT_QUIT) 
             {
                 result = false;
