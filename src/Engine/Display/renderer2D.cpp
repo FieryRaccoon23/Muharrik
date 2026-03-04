@@ -16,7 +16,7 @@
 #include "Components/sdldata.h"
 #include "Components/fov.h"
 
-#include "Backends/RmlUi_Platform_SDL.h"
+#include "ThirdParty/rmlui/Backends/RmlUi_Platform_SDL.h"
 
 namespace Muharrik
 {
