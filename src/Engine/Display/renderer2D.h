@@ -7,6 +7,9 @@
 #include <entt/entt.hpp>
 #include <RmlUi/Core.h>
 
+#include "RmlSystemInterface.h"
+#include "ThirdParty/rmlui/Backends/RmlUi_Renderer_SDL.h"
+
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Texture;
@@ -28,8 +31,14 @@ namespace Muharrik
         void ToggleFullScreen() const;
 
         private:
+        void InitRML();
+
         SDL_Window* mWindow = nullptr;
         SDL_Renderer* mRenderer = nullptr;
         eastl::string mBasePath;
+
+        RmlSystemInterface mRmlSystem;
+        std::optional<RenderInterface_SDL> mRmlRenderer;
+        Rml::Context* mRmlContext = nullptr;
     };
 }

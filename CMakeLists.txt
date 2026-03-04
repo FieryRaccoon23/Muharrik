@@ -32,16 +32,10 @@ option(MUHARRIK_RMLUI "Enable RmlUi integration" ON)
 
 if(MUHARRIK_RMLUI)
     # ---- FreeType (dependency of RmlUi default font engine) ----
-    # Build FreeType from submodule: thirdparty/freetype
-    # RmlUi expects a target named Freetype::Freetype.
-    # The FreeType submodule often exports a target called 'freetype', so we create an ALIAS if needed.
-
-    # Prefer static build to match your project
     set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
 
     add_subdirectory(thirdparty/freetype EXCLUDE_FROM_ALL)
 
-    # Create the expected target name if the submodule only defines 'freetype'
     if(TARGET freetype AND NOT TARGET Freetype::Freetype)
         add_library(Freetype::Freetype ALIAS freetype)
     endif()
@@ -87,7 +81,7 @@ target_include_directories(eabase INTERFACE
     "${CMAKE_SOURCE_DIR}/thirdparty/eabase/include/Common"
 )
 
-# Build EASTL from sources (works even if EASTL's own CMake isn't used)
+# Build EASTL from sources
 file(GLOB EASTL_SOURCES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/thirdparty/eastl/source/*.cpp"
 )
@@ -99,7 +93,6 @@ target_include_directories(eastl PUBLIC
 )
 target_link_libraries(eastl PUBLIC eabase)
 
-# Ensure EASTL debug/aligned new/delete overloads are linked whenever EASTL is linked
 target_sources(eastl PRIVATE
     "${CMAKE_SOURCE_DIR}/src/Engine/ThirdParty/eastl_new_delete.cpp"
 )
@@ -110,12 +103,10 @@ target_sources(eastl PRIVATE
 option(MUHARRIK_LLAMA "Enable llama.cpp integration" ON)
 
 if(MUHARRIK_LLAMA)
-    # Disable llama.cpp extras (faster builds; keeps only libraries)
     set(LLAMA_BUILD_TESTS OFF CACHE BOOL "" FORCE)
     set(LLAMA_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
     set(LLAMA_BUILD_SERVER OFF CACHE BOOL "" FORCE)
 
-    # Add llama.cpp from submodule folder: thirdparty/llama
     add_subdirectory(thirdparty/llama EXCLUDE_FROM_ALL)
 endif()
 
@@ -135,8 +126,6 @@ file(GLOB_RECURSE GAME_SOURCES CONFIGURE_DEPENDS
 add_executable(app src/main.cpp)
 target_compile_definitions(app PRIVATE SDL_MAIN_HANDLED)
 
-# Copy runtime content next to the executable: build/bin/content/...
-# This will include: src/content/game/... automatically
 add_custom_command(TARGET app POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E make_directory "$<TARGET_FILE_DIR:app>/content"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
@@ -148,8 +137,6 @@ add_custom_command(TARGET app POST_BUILD
 if (ENGINE_SOURCES)
     add_library(muharrik_engine STATIC ${ENGINE_SOURCES})
 
-    # IMPORTANT:
-    # - src/Engine is the include root so you can do: #include "ECS/ecs.h"
     target_include_directories(muharrik_engine PUBLIC
         "${CMAKE_SOURCE_DIR}/src/Engine"
         "${CMAKE_SOURCE_DIR}/thirdparty/glm"
@@ -164,8 +151,24 @@ if (ENGINE_SOURCES)
         eabase
     )
 
-    # ---- Link RmlUi into engine (robust target selection) ----
+    # ---- RmlUi backend + engine integration ----
     if(MUHARRIK_RMLUI)
+        # Add the SDL backend source files directly into the engine
+        target_sources(muharrik_engine PRIVATE
+            "${CMAKE_SOURCE_DIR}/src/Engine/ThirdParty/rmlui/Backends/RmlUi_Renderer_SDL.cpp"
+            "${CMAKE_SOURCE_DIR}/src/Engine/ThirdParty/rmlui/Backends/RmlUi_Platform_SDL.cpp"
+        )
+
+        # Tell the backend which SDL major version is being used
+        target_compile_definitions(muharrik_engine PUBLIC
+            RMLUI_SDL_VERSION_MAJOR=3
+        )
+
+        # Make the backend headers #include-able as "Backends/RmlUi_Renderer_SDL.h"
+        target_include_directories(muharrik_engine PUBLIC
+            "${CMAKE_SOURCE_DIR}/src/Engine/ThirdParty/rmlui"
+        )
+
         if(TARGET RmlUi::RmlUi)
             target_link_libraries(muharrik_engine PUBLIC RmlUi::RmlUi)
         elseif(TARGET RmlUi::Core)
@@ -177,7 +180,7 @@ if (ENGINE_SOURCES)
         endif()
     endif()
 
-    # ---- Link llama.cpp into engine (app inherits it via game->engine) ----
+    # ---- Link llama.cpp into engine ----
     if(MUHARRIK_LLAMA)
         target_include_directories(muharrik_engine PUBLIC
             "${CMAKE_SOURCE_DIR}/thirdparty/llama/include"

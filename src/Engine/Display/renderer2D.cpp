@@ -36,6 +36,8 @@ namespace Muharrik
             return 1;
         }
 
+        const char* sdlPath = SDL_GetBasePath();
+        mBasePath = sdlPath;
 
         mRenderer = SDL_CreateRenderer(mWindow, nullptr);
         if (!mRenderer) 
@@ -44,10 +46,9 @@ namespace Muharrik
             return 1;
         }
 
-        //std::printf("CWD: %s\n", SDL_GetBasePath());
+        InitRML();
 
-        const char* sdlPath = SDL_GetBasePath();
-        mBasePath = sdlPath;
+        //std::printf("CWD: %s\n", SDL_GetBasePath());
 
         // const char* name = SDL_GetRendererName(mRenderer);
         // if (!name) 
@@ -61,6 +62,30 @@ namespace Muharrik
         // }
 
         return 0;
+    }
+
+    void SDL::InitRML()
+    {
+        mRmlRenderer.emplace(mRenderer);
+
+        Rml::SetSystemInterface(&mRmlSystem);
+        Rml::SetRenderInterface(&mRmlRenderer.value());
+
+        Rml::Initialise();
+
+        int w, h;
+        SDL_GetWindowSize(mWindow, &w, &h);
+        mRmlContext = Rml::CreateContext("main", Rml::Vector2i(w, h));
+
+        eastl::string absolutePathFonts = mBasePath + "content/engine/UI/fonts/LatoLatin-Regular.ttf";
+        Rml::LoadFontFace(absolutePathFonts.c_str());
+
+        eastl::string absolutePathHud = mBasePath + "content/engine/UI/hud.rml";
+        Rml::ElementDocument* doc = mRmlContext->LoadDocument(absolutePathHud.c_str());
+        if (doc) 
+        {
+            doc->Show();
+        }
     }
 
     bool SDL::PollSDL()
@@ -85,6 +110,8 @@ namespace Muharrik
 
     void SDL::QuitSDL()
     {
+        Rml::Shutdown();
+
         if(mWindow)
         {
             SDL_DestroyWindow(mWindow);
@@ -126,7 +153,7 @@ namespace Muharrik
     void SDL::RenderTexture(const SpriteAssetManager* spriteAssetManager, 
         entt::registry& registry, const entt::entity camera2DEntity)
     {
-        SDL_RenderClear(mRenderer);
+        mRmlRenderer.value().BeginFrame();
 
         const Position2D& cameraPos = registry.get<Position2D>(camera2DEntity);
         const FoV& cameraFov = registry.get<FoV>(camera2DEntity);
@@ -168,6 +195,10 @@ namespace Muharrik
                 SDL_RenderTexture(mRenderer, texture, nullptr, &dst);
             }
         }
+
+        mRmlContext->Update();
+        mRmlContext->Render();
+        mRmlRenderer.value().EndFrame(); 
 
         SDL_RenderPresent(mRenderer);
     }

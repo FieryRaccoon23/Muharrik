@@ -1,0 +1,15 @@
+<rml>
+  <head>
+    <title>HUD</title>
+    <style>
+      body {
+        font-family: LatoLatin;
+        font-size: 16px;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <p>Hello from RmlUi!</p>
+  </body>
+</rml>
