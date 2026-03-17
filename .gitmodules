@@ -31,3 +31,6 @@
 [submodule "thirdparty/freetype"]
 	path = thirdparty/freetype
 	url = https://gitlab.freedesktop.org/freetype/freetype.git
+[submodule "thirdparty/mujoco"]
+	path = thirdparty/mujoco
+	url = https://github.com/google-deepmind/mujoco.git
