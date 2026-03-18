@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Config/MuharrikConfig.h"
+
+#if MUHARRIK_ENABLE_RMLUI
 #include <RmlUi/Core/RenderInterface.h>
 
 #if RMLUI_SDL_VERSION_MAJOR == 3
@@ -44,3 +47,4 @@ private:
 	Rml::UniquePtr<SDL_Vertex[]> sdl_vertices;
 	size_t sdl_vertices_size = 0;
 };
+#endif

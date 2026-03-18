@@ -1,4 +1,6 @@
 #include "RmlUi_Renderer_SDL.h"
+
+#if MUHARRIK_ENABLE_RMLUI
 #include <RmlUi/Core/Core.h>
 #include <RmlUi/Core/FileInterface.h>
 #include <RmlUi/Core/Types.h>
@@ -210,3 +212,4 @@ void RenderInterface_SDL::ReleaseTexture(Rml::TextureHandle texture_handle)
 {
 	SDL_DestroyTexture((SDL_Texture*)texture_handle);
 }
+#endif

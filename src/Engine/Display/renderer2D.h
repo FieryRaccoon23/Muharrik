@@ -1,14 +1,18 @@
 #pragma once
 
+#include "Config/MuharrikConfig.h"
+
 #include <cstdint>
 
 #include <EASTL/string.h>
 #include <EASTL/span.h>
 #include <entt/entt.hpp>
-#include <RmlUi/Core.h>
 
+#if MUHARRIK_ENABLE_RMLUI
+#include <RmlUi/Core.h>
 #include "RmlSystemInterface.h"
 #include "ThirdParty/rmlui/Backends/RmlUi_Renderer_SDL.h"
+#endif
 
 struct SDL_Window;
 struct SDL_Renderer;
@@ -31,14 +35,18 @@ namespace Muharrik
         void ToggleFullScreen() const;
 
         private:
+#if MUHARRIK_ENABLE_RMLUI
         void InitRML();
+#endif
 
         SDL_Window* mWindow = nullptr;
         SDL_Renderer* mRenderer = nullptr;
         eastl::string mBasePath;
 
+#if MUHARRIK_ENABLE_RMLUI
         RmlSystemInterface mRmlSystem;
         std::optional<RenderInterface_SDL> mRmlRenderer;
         Rml::Context* mRmlContext = nullptr;
+#endif
     };
 }

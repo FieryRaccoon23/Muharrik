@@ -28,7 +28,7 @@ find_package(Threads REQUIRED)
 # ----------------------------
 # RmlUi + FreeType
 # ----------------------------
-option(MUHARRIK_RMLUI "Enable RmlUi integration" ON)
+option(MUHARRIK_RMLUI "Enable RmlUi integration" OFF)
 
 if(MUHARRIK_RMLUI)
     set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)

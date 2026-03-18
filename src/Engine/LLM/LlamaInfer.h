@@ -1,8 +1,7 @@
-#define MUHARRIK_ENABLE_LLAMA 0
+#pragma once
+#include "Config/MuharrikConfig.h"
 
 #if MUHARRIK_ENABLE_LLAMA
-#pragma once
-
 
 namespace Muharrik
 {

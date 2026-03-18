@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Config/MuharrikConfig.h"
+
+#if MUHARRIK_ENABLE_RMLUI
+
 #include <RmlUi/Core/Input.h>
 #include <RmlUi/Core/SystemInterface.h>
 #include <RmlUi/Core/Types.h>
@@ -62,3 +66,4 @@ int ConvertMouseButton(int sdl_mouse_button);
 int GetKeyModifierState();
 
 } // namespace RmlSDL
+#endif

@@ -1,4 +1,6 @@
 #include "RmlUi_Platform_SDL.h"
+
+#if MUHARRIK_ENABLE_RMLUI
 #include <RmlUi/Core/Context.h>
 #include <RmlUi/Core/Input.h>
 #include <RmlUi/Core/StringUtilities.h>
@@ -519,3 +521,4 @@ int RmlSDL::GetKeyModifierState()
 
 	return retval;
 }
+#endif

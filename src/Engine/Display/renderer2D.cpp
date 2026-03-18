@@ -16,7 +16,9 @@
 #include "Components/sdldata.h"
 #include "Components/fov.h"
 
+#if MUHARRIK_ENABLE_RMLUI
 #include "ThirdParty/rmlui/Backends/RmlUi_Platform_SDL.h"
+#endif
 
 namespace Muharrik
 {
@@ -47,9 +49,9 @@ namespace Muharrik
             std::printf("SDL: SDL_CreateRenderer failed: %s\n", SDL_GetError());
             return 1;
         }
-
+#if MUHARRIK_ENABLE_RMLUI
         InitRML();
-
+#endif
         //std::printf("CWD: %s\n", SDL_GetBasePath());
 
         // const char* name = SDL_GetRendererName(mRenderer);
@@ -65,7 +67,7 @@ namespace Muharrik
 
         return 0;
     }
-
+#if MUHARRIK_ENABLE_RMLUI
     void SDL::InitRML()
     {
         mRmlRenderer.emplace(mRenderer);
@@ -89,6 +91,7 @@ namespace Muharrik
             doc->Show();
         }
     }
+#endif
 
     bool SDL::PollSDL()
     {
@@ -96,8 +99,10 @@ namespace Muharrik
         SDL_Event e;
         while (SDL_PollEvent(&e))
         {
+#if MUHARRIK_ENABLE_RMLUI
             // Forward event to RmlUi first
             RmlSDL::InputEventHandler(mRmlContext, mWindow, e);
+#endif
 
             // Then your own event handling
             if (e.type == SDL_EVENT_QUIT) 
@@ -116,7 +121,9 @@ namespace Muharrik
 
     void SDL::QuitSDL()
     {
+#if MUHARRIK_ENABLE_RMLUI
         Rml::Shutdown();
+#endif
 
         if(mWindow)
         {
@@ -159,7 +166,11 @@ namespace Muharrik
     void SDL::RenderTexture(const SpriteAssetManager* spriteAssetManager, 
         entt::registry& registry, const entt::entity camera2DEntity)
     {
+#if MUHARRIK_ENABLE_RMLUI
         mRmlRenderer.value().BeginFrame();
+#else
+        SDL_RenderClear(mRenderer);
+#endif
 
         const Position2D& cameraPos = registry.get<Position2D>(camera2DEntity);
         const FoV& cameraFov = registry.get<FoV>(camera2DEntity);
@@ -202,10 +213,11 @@ namespace Muharrik
             }
         }
 
+#if MUHARRIK_ENABLE_RMLUI
         mRmlContext->Update();
         mRmlContext->Render();
         mRmlRenderer.value().EndFrame(); 
-
+#endif
         SDL_RenderPresent(mRenderer);
     }
 

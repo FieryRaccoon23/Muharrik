@@ -1,0 +1,4 @@
+#pragma once
+
+#define MUHARRIK_ENABLE_LLAMA 0
+#define MUHARRIK_ENABLE_RMLUI 0
