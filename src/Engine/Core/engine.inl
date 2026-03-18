@@ -1,6 +1,7 @@
 #include "Extern/TracyProfiler.h"
 
 #include "LLM/LlamaInfer.h"
+#include "Physics/PhysicsSystem.h"
 
 namespace Muharrik
 {
@@ -11,8 +12,12 @@ namespace Muharrik
 
         game.Init(this);
 
+#if MUHARRIK_ENABLE_LLAMA
         LlamaInfer infer;
         //infer.TestLlama();
+#endif
+
+        PhysicsSystem physicsSystem;
 
         while (running) 
         {

@@ -96,7 +96,7 @@ target_sources(eastl PRIVATE
 # ----------------------------
 # llama.cpp (local LLM)
 # ----------------------------
-option(MUHARRIK_LLAMA "Enable llama.cpp integration" ON)
+option(MUHARRIK_LLAMA "Enable llama.cpp integration" OFF)
 
 if(MUHARRIK_LLAMA)
     set(LLAMA_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
